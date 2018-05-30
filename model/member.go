@@ -1,7 +1,7 @@
 package model
 
 type Member struct {
-	ID           int64 `mvlrest:"pk"`
+	Id           int64
 	FirstName    string
 	LastName     string
 	Joined       int
@@ -10,5 +10,6 @@ type Member struct {
 	Deleted      bool
 	LoginAllowed bool
 
-	Instrument Instrument
+	Instrument   *Instrument
+	InstrumentId int64 `qbs:"fk:Instrument"`
 }

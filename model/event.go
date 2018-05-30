@@ -3,7 +3,7 @@ package model
 import "time"
 
 type Event struct {
-	ID            int64 `mvlrest:"pk"`
+	Id            int64
 	Date          time.Time
 	Time          time.Time
 	MusicianTime  time.Time

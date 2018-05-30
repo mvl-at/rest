@@ -1,15 +1,16 @@
 package database
 
 import (
-	"database/sql"
+	"github.com/coocood/qbs"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
 )
 
-var db *sql.DB
+var db *qbs.Qbs
 
 func Connect() {
-	database, err := sql.Open("sqlite3", "mvl.sqlite")
+	qbs.RegisterSqlite3("mvl.sqlite")
+	database, err := qbs.GetQbs()
 
 	if err != nil {
 		log.Fatal(err.Error())

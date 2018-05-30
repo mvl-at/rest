@@ -1,13 +1,21 @@
 package model
 
+import "github.com/coocood/qbs"
+
 type LeaderRole struct {
-	ID         int64 `mvlrest:"pk"`
+	Id         int64
 	Name       string
 	NamePlural string
 }
 
 type LeaderRoleMember struct {
-	LeaderRole LeaderRole `mvlrest:"pk"`
-	Member     Member     `mvlrest:"pk"`
-	Priority   int
+	LeaderRole   *LeaderRole
+	LeaderRoleId int64 `qbs:"fk:LeaderRole"`
+	Member       *Member
+	MemberId     int64 `qbs:"fk:Member"`
+	Priority     int
+}
+
+func (*LeaderRoleMember) Indexes(indexes *qbs.Indexes) {
+	indexes.AddUnique("leader_role_id", "member_id")
 }

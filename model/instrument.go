@@ -1,7 +1,7 @@
 package model
 
 type Instrument struct {
-	ID         int64 `mvlrest:"pk"`
+	Id         int64
 	Name       string
 	NamePlural string
 }

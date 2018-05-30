@@ -24,7 +24,11 @@ func Init() {
 		Events: []model.Event{
 			{Name: "baum"},
 			{Name: "Frühschoppen", Internal: true}}}
-	http.ListenAndServe("0.0.0.0:8080", nil)
+	err := http.ListenAndServe("0.0.0.0:8080", nil)
+
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 }
 
 func Routes() {
@@ -46,7 +50,8 @@ func rest(next http.HandlerFunc) http.HandlerFunc {
 func events(rw http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
-		ev := database.GenericFetch(model.Event{})
+		ev := make([]*model.Event, 0)
+		database.GenericFetch(ev)
 		err := json.NewEncoder(rw).Encode(ev)
 		if err != nil {
 			log.Println(err.Error())
@@ -61,7 +66,8 @@ func instruments(rw http.ResponseWriter, r *http.Request) {
 	success := false
 
 	if r.Method == "GET" {
-		ev := database.GenericFetch(model.Instrument{})
+		ev := make([]*model.Instrument, 0)
+		database.GenericFetch(ev)
 		err := json.NewEncoder(rw).Encode(ev)
 		if err != nil {
 			log.Println(err.Error())
@@ -89,7 +95,8 @@ func instruments(rw http.ResponseWriter, r *http.Request) {
 func members(rw http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
-		ev := database.GenericFetch(model.Member{})
+		ev := make([]*model.Member, 0)
+		database.GenericFetch(ev)
 		err := json.NewEncoder(rw).Encode(ev)
 		if err != nil {
 			log.Println(err.Error())
@@ -102,7 +109,8 @@ func members(rw http.ResponseWriter, r *http.Request) {
 func roles(rw http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
-		ev := database.GenericFetch(model.Role{})
+		ev := make([]*model.Role, 0)
+		database.GenericFetch(ev)
 		err := json.NewEncoder(rw).Encode(ev)
 		if err != nil {
 			log.Println(err.Error())
