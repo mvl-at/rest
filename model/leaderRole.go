@@ -1,6 +1,6 @@
 package model
 
-import "github.com/coocood/qbs"
+import "github.com/mvl-at/qbs"
 
 type LeaderRole struct {
 	Id         int64

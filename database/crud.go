@@ -1,20 +1,68 @@
 package database
 
-import "github.com/coocood/qbs"
+import (
+	"github.com/mvl-at/qbs"
+	"rest/context"
+)
+
+func log(err error) {
+
+	if err != nil {
+		context.ErrLog.Println(err)
+	}
+}
 
 func GenericCreate(a interface{}) {
 	m, _ := qbs.GetMigration()
-	m.CreateTableIfNotExists(a)
+
+	err := m.CreateTableIfNotExists(a)
+	log(err)
 }
 
 func GenericDelete(a interface{}) {
-	db.Delete(a)
+	db, err := qbs.GetQbs()
+	defer db.Close()
+	db.Log = true
+
+	if err != nil {
+		log(err)
+		return
+	}
+
+	_, err = db.Delete(a)
+	if err != nil {
+		log(err)
+	}
 }
 
 func GenericSave(a interface{}, autoKey bool) {
-	db.Save(a)
+	db, err := qbs.GetQbs()
+	defer db.Close()
+	db.Log = true
+
+	if err != nil {
+		log(err)
+		return
+	}
+
+	_, err = db.Save(a)
+	if err != nil {
+		log(err)
+	}
 }
 
 func GenericFetch(a interface{}) {
-	db.FindAll(a)
+	db, err := qbs.GetQbs()
+	defer db.Close()
+	db.Log = true
+
+	if err != nil {
+		log(err)
+		return
+	}
+
+	err = db.FindAll(a)
+	if err != nil {
+		log(err)
+	}
 }

@@ -5,12 +5,12 @@ import (
 	"rest/manager"
 	"rest/model"
 	"time"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
-	database.Connect()
 	//database.Create()
-	register()
+	manager.Register()
 	ev := model.Event{
 		Name:          "Früschoppen",
 		Uniform:       "ohne Hut",
@@ -25,14 +25,4 @@ func main() {
 	database.GenericSave(&ev, true)
 	//database.GenericFetch(model.Event{})
 	manager.Init()
-}
-
-func register() {
-	database.GenericCreate(&model.Event{})
-	database.GenericCreate(&model.Instrument{})
-	database.GenericCreate(&model.Member{})
-	database.GenericCreate(&model.LeaderRole{})
-	database.GenericCreate(&model.LeaderRoleMember{})
-	database.GenericCreate(&model.Role{})
-	database.GenericCreate(&model.RoleMember{})
 }

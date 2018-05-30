@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"rest/database"
 	"rest/model"
+	"github.com/mvl-at/qbs"
+	"rest/context"
 )
 
 type ModelHolder struct {
@@ -31,6 +33,19 @@ func Init() {
 	}
 }
 
+func Register() {
+	qbs.SetLogger(context.Log, context.ErrLog)
+	qbs.RegisterSqlite3("mvl.sqlite")
+	database.GenericCreate(&model.Event{})
+	database.GenericCreate(&model.Instrument{})
+	database.GenericCreate(&model.Member{})
+	database.GenericCreate(&model.LeaderRole{})
+	database.GenericCreate(&model.LeaderRoleMember{})
+	database.GenericCreate(&model.Role{})
+	database.GenericCreate(&model.RoleMember{})
+}
+
+
 func Routes() {
 	http.HandleFunc("/events", rest(events))
 	http.HandleFunc("/members", rest(members))
@@ -51,7 +66,7 @@ func events(rw http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
 		ev := make([]*model.Event, 0)
-		database.GenericFetch(ev)
+		database.GenericFetch(&ev)
 		err := json.NewEncoder(rw).Encode(ev)
 		if err != nil {
 			log.Println(err.Error())
@@ -67,7 +82,7 @@ func instruments(rw http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
 		ev := make([]*model.Instrument, 0)
-		database.GenericFetch(ev)
+		database.GenericFetch(&ev)
 		err := json.NewEncoder(rw).Encode(ev)
 		if err != nil {
 			log.Println(err.Error())
