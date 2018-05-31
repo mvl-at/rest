@@ -1,6 +1,14 @@
 :author: Richard Stöckl
 :icons: font
 
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
 = Rest
 
 This is a simple REST for the Musikverein Leopoldsdorf infrastructure.
