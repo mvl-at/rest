@@ -1,0 +1,37 @@
+:author: Richard Stöckl
+:icons: font
+
+= Rest
+
+This is a simple REST for the Musikverein Leopoldsdorf infrastructure.
+It is desinged as lightweight application with SQLite only.
+However it might be possible that other data sources will be added in the future.
+
+== Features
+
+Only a few features are implemented yet.
+The main feature is accessing the Musikvereins data via REST.
+
+=== Work in progress
+
+* inserting data
+* deleting data
+* manipulating data
+
+=== Future Features
+
+* let commit data only with authentication
+* availability checker
+* Hugo instance for protocol hosting (separate repo)
+* web client (separate repo)
+
+== Installation
+
+[source, bash]
+----
+go get github.com/mvl-at/rest
+----
+
+WARNING: Since it is only required to run this application on Linux, it will not be tested on any ther platform.
+
+NOTE: Currently, this repository is only hosted on GitHub but it is planned that the platform will change to an internal Gitea instance.

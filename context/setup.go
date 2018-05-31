@@ -1,9 +1,9 @@
 package context
 
 import (
+	"encoding/json"
 	"log"
 	"os"
-	"encoding/json"
 )
 
 const ConfigPath = "conf.json"
