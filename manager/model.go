@@ -2,12 +2,13 @@ package manager
 
 import (
 	"encoding/json"
+	"github.com/mvl-at/qbs"
 	"log"
 	"net/http"
+	"rest/context"
 	"rest/database"
 	"rest/model"
-	"github.com/mvl-at/qbs"
-	"rest/context"
+	"fmt"
 )
 
 type ModelHolder struct {
@@ -26,7 +27,9 @@ func Init() {
 		Events: []model.Event{
 			{Name: "baum"},
 			{Name: "Frühschoppen", Internal: true}}}
-	err := http.ListenAndServe("0.0.0.0:8080", nil)
+	host := fmt.Sprintf("%s:%d", context.Conf.Host, context.Conf.Port)
+	context.Log.Println("Listen on " + host)
+	err := http.ListenAndServe(host, nil)
 
 	if err != nil {
 		log.Fatal(err.Error())
@@ -44,7 +47,6 @@ func Register() {
 	database.GenericCreate(&model.Role{})
 	database.GenericCreate(&model.RoleMember{})
 }
-
 
 func Routes() {
 	http.HandleFunc("/events", rest(events))
