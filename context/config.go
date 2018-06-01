@@ -2,8 +2,11 @@ package context
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
+	"math/rand"
 	"os"
+	"time"
 )
 
 const ConfigPath = "conf.json"
@@ -13,7 +16,6 @@ var ErrLog = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Llongfile)
 var Conf = config()
 
 func config() (conf *Configuration) {
-
 	conf = &Configuration{}
 	fil, err := os.OpenFile(ConfigPath, 0, 0644)
 	defer fil.Close()
@@ -21,10 +23,14 @@ func config() (conf *Configuration) {
 	if err != nil {
 		fil, err = os.Create(ConfigPath)
 		defer fil.Close()
+		rand.Seed(time.Now().UnixNano())
+		jwtSecret := make([]byte, 8)
+		rand.Read(jwtSecret)
 		conf = &Configuration{
 			Host:       "0.0.0.0",
 			Port:       8080,
-			SQLiteFile: "mvl.sqlite"}
+			SQLiteFile: "mvl.sqlite",
+			JwtSecret:  fmt.Sprintf("%x", jwtSecret)}
 		enc := json.NewEncoder(fil)
 		enc.SetIndent("", "  ")
 		err = enc.Encode(conf)
@@ -43,4 +49,5 @@ type Configuration struct {
 	Host       string `json:"host"`
 	Port       uint16 `json:"port"`
 	SQLiteFile string `json:"sqliteFile"`
+	JwtSecret  string `json:"jwtSecret"`
 }

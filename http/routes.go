@@ -8,6 +8,7 @@ import (
 	"rest/context"
 	"rest/database"
 	"rest/model"
+	"rest/security"
 )
 
 func Routes() {
@@ -18,6 +19,7 @@ func Routes() {
 	http.HandleFunc("/rolesMembers", rest(rolesMembers))
 	http.HandleFunc("/leaderRoles", rest(leaderRoles))
 	http.HandleFunc("/leaderRolesMembers", rest(leaderRolesMembers))
+	http.HandleFunc("/login", rest(login))
 }
 
 func rest(next http.HandlerFunc) http.HandlerFunc {
@@ -102,5 +104,18 @@ func rolesMembers(rw http.ResponseWriter, r *http.Request) {
 
 	if !get(rw, r, &model.RoleMember{}) {
 		rw.WriteHeader(http.StatusNotFound)
+	}
+}
+
+func login(rw http.ResponseWriter, r *http.Request) {
+	jwtData := security.JWTData{}
+	err := json.NewDecoder(r.Body).Decode(&jwtData)
+
+	if err != nil {
+		context.Log.Println(err.Error())
+	} else {
+		//TODO status on login fail
+		_, token := security.Login(&jwtData)
+		rw.Write([]byte(token))
 	}
 }
