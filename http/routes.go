@@ -8,7 +8,6 @@ import (
 	"rest/model"
 )
 
-
 func Routes() {
 	http.HandleFunc("/events", rest(events))
 	http.HandleFunc("/members", rest(members))
@@ -31,9 +30,9 @@ func rest(next http.HandlerFunc) http.HandlerFunc {
 func events(rw http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
-		ev := make([]*model.Event, 0)
-		database.GenericFetch(&ev)
-		err := json.NewEncoder(rw).Encode(ev)
+		events := make([]*model.Event, 0)
+		database.GenericFetch(&events)
+		err := json.NewEncoder(rw).Encode(&events)
 		if err != nil {
 			log.Println(err.Error())
 		}
@@ -47,9 +46,9 @@ func instruments(rw http.ResponseWriter, r *http.Request) {
 	success := false
 
 	if r.Method == "GET" {
-		ev := make([]*model.Instrument, 0)
-		database.GenericFetch(&ev)
-		err := json.NewEncoder(rw).Encode(ev)
+		instruments := make([]*model.Instrument, 0)
+		database.GenericFetch(&instruments)
+		err := json.NewEncoder(rw).Encode(&instruments)
 		if err != nil {
 			log.Println(err.Error())
 		} else {
@@ -76,9 +75,9 @@ func instruments(rw http.ResponseWriter, r *http.Request) {
 func members(rw http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
-		ev := make([]*model.Member, 0)
-		database.GenericFetch(ev)
-		err := json.NewEncoder(rw).Encode(ev)
+		members := make([]*model.Member, 0)
+		database.GenericFetch(&members)
+		err := json.NewEncoder(rw).Encode(&members)
 		if err != nil {
 			log.Println(err.Error())
 		}
@@ -90,9 +89,9 @@ func members(rw http.ResponseWriter, r *http.Request) {
 func roles(rw http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
-		ev := make([]*model.Role, 0)
-		database.GenericFetch(ev)
-		err := json.NewEncoder(rw).Encode(ev)
+		roles := make([]*model.Role, 0)
+		database.GenericFetch(&roles)
+		err := json.NewEncoder(rw).Encode(&roles)
 		if err != nil {
 			log.Println(err.Error())
 		}
@@ -105,8 +104,8 @@ func leaderRoles(rw http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
 		leaderRoles := make([]*model.LeaderRole, 0)
-		database.GenericFetch(leaderRoles)
-		err := json.NewEncoder(rw).Encode(leaderRoles)
+		database.GenericFetch(&leaderRoles)
+		err := json.NewEncoder(rw).Encode(&leaderRoles)
 		if err != nil {
 			log.Println(err.Error())
 		}
@@ -119,8 +118,8 @@ func leaderRolesMembers(rw http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
 		leaderRolesMembers := make([]*model.LeaderRoleMember, 0)
-		database.GenericFetch(leaderRolesMembers)
-		err := json.NewEncoder(rw).Encode(leaderRolesMembers)
+		database.GenericFetch(&leaderRolesMembers)
+		err := json.NewEncoder(rw).Encode(&leaderRolesMembers)
 		if err != nil {
 			log.Println(err.Error())
 		}
@@ -133,8 +132,8 @@ func rolesMembers(rw http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
 		rolesMembers := make([]*model.RoleMember, 0)
-		database.GenericFetch(rolesMembers)
-		err := json.NewEncoder(rw).Encode(rolesMembers)
+		database.GenericFetch(&rolesMembers)
+		err := json.NewEncoder(rw).Encode(&rolesMembers)
 		if err != nil {
 			log.Println(err.Error())
 		}
