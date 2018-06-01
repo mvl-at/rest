@@ -1,16 +1,16 @@
 package model
 
 type LeaderRole struct {
-	Id         int64
-	Name       string
-	NamePlural string
+	Id         int64  `json:"id"`
+	Name       string `json:"name"`
+	NamePlural string `json:"namePlural"`
 }
 
 type LeaderRoleMember struct {
-	Id           int64
-	LeaderRole   *LeaderRole
-	LeaderRoleId int64 `qbs:"fk:LeaderRole"`
-	Member       *Member
-	MemberId     int64 `qbs:"fk:Member"`
-	Priority     int
+	Id           int64       `json:"id"`
+	LeaderRole   *LeaderRole `json:"leaderRole"`
+	LeaderRoleId int64       `qbs:"fk:LeaderRole"json:"leaderRoleId"`
+	Member       *Member     `json:"member"`
+	MemberId     int64       `qbs:"fk:Member"json:"memberId"`
+	Priority     int         `json:"priority"`
 }
