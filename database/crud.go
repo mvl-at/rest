@@ -35,7 +35,7 @@ func GenericDelete(a interface{}) {
 	}
 }
 
-func GenericSave(a interface{}, autoKey bool) {
+func GenericSave(a interface{}) {
 	db, err := qbs.GetQbs()
 	defer db.Close()
 	db.Log = true

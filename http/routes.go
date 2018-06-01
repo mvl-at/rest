@@ -63,7 +63,7 @@ func instruments(rw http.ResponseWriter, r *http.Request) {
 			log.Println(err.Error())
 		} else {
 			success = true
-			database.GenericSave(instrument, true)
+			database.GenericSave(instrument)
 		}
 	}
 
