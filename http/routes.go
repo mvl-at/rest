@@ -1,52 +1,13 @@
-package manager
+package http
 
 import (
 	"encoding/json"
-	"fmt"
-	"github.com/mvl-at/qbs"
 	"log"
 	"net/http"
-	"rest/context"
 	"rest/database"
 	"rest/model"
 )
 
-type ModelHolder struct {
-	Events      []model.Event
-	Instruments []model.Instrument
-	LeaderRoles []model.LeaderRole
-	Members     []model.Member
-	Roles       []model.Role
-}
-
-var modelHolder ModelHolder
-
-func Init() {
-	Routes()
-	modelHolder = ModelHolder{
-		Events: []model.Event{
-			{Name: "baum"},
-			{Name: "Frühschoppen", Internal: true}}}
-	host := fmt.Sprintf("%s:%d", context.Conf.Host, context.Conf.Port)
-	context.Log.Println("Listen on " + host)
-	err := http.ListenAndServe(host, nil)
-
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-}
-
-func Register() {
-	qbs.SetLogger(context.Log, context.ErrLog)
-	qbs.RegisterSqlite3(context.Conf.SQLiteFile)
-	database.GenericCreate(&model.Event{})
-	database.GenericCreate(&model.Instrument{})
-	database.GenericCreate(&model.Member{})
-	database.GenericCreate(&model.LeaderRole{})
-	database.GenericCreate(&model.LeaderRoleMember{})
-	database.GenericCreate(&model.Role{})
-	database.GenericCreate(&model.RoleMember{})
-}
 
 func Routes() {
 	http.HandleFunc("/events", rest(events))
