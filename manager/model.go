@@ -38,7 +38,7 @@ func Init() {
 
 func Register() {
 	qbs.SetLogger(context.Log, context.ErrLog)
-	qbs.RegisterSqlite3("mvl.sqlite")
+	qbs.RegisterSqlite3(context.Conf.SQLiteFile)
 	database.GenericCreate(&model.Event{})
 	database.GenericCreate(&model.Instrument{})
 	database.GenericCreate(&model.Member{})
