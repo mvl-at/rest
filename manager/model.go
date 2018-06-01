@@ -53,6 +53,9 @@ func Routes() {
 	http.HandleFunc("/members", rest(members))
 	http.HandleFunc("/instruments", rest(instruments))
 	http.HandleFunc("/roles", rest(roles))
+	http.HandleFunc("/rolesMembers", rest(rolesMembers))
+	http.HandleFunc("/leaderRoles", rest(leaderRoles))
+	http.HandleFunc("/leaderRolesMembers", rest(leaderRolesMembers))
 	http.HandleFunc("/events{id}", rest(event))
 }
 
@@ -129,6 +132,48 @@ func roles(rw http.ResponseWriter, r *http.Request) {
 		ev := make([]*model.Role, 0)
 		database.GenericFetch(ev)
 		err := json.NewEncoder(rw).Encode(ev)
+		if err != nil {
+			log.Println(err.Error())
+		}
+	} else {
+		rw.WriteHeader(http.StatusNotFound)
+	}
+}
+
+func leaderRoles(rw http.ResponseWriter, r *http.Request) {
+
+	if r.Method == "GET" {
+		leaderRoles := make([]*model.LeaderRole, 0)
+		database.GenericFetch(leaderRoles)
+		err := json.NewEncoder(rw).Encode(leaderRoles)
+		if err != nil {
+			log.Println(err.Error())
+		}
+	} else {
+		rw.WriteHeader(http.StatusNotFound)
+	}
+}
+
+func leaderRolesMembers(rw http.ResponseWriter, r *http.Request) {
+
+	if r.Method == "GET" {
+		leaderRolesMembers := make([]*model.LeaderRoleMember, 0)
+		database.GenericFetch(leaderRolesMembers)
+		err := json.NewEncoder(rw).Encode(leaderRolesMembers)
+		if err != nil {
+			log.Println(err.Error())
+		}
+	} else {
+		rw.WriteHeader(http.StatusNotFound)
+	}
+}
+
+func rolesMembers(rw http.ResponseWriter, r *http.Request) {
+
+	if r.Method == "GET" {
+		rolesMembers := make([]*model.RoleMember, 0)
+		database.GenericFetch(rolesMembers)
+		err := json.NewEncoder(rw).Encode(rolesMembers)
 		if err != nil {
 			log.Println(err.Error())
 		}
