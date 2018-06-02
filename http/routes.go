@@ -114,8 +114,12 @@ func login(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		context.Log.Println(err.Error())
 	} else {
-		//TODO status on login fail
-		_, token := security.Login(&jwtData)
-		rw.Write([]byte(token))
+		success, token := security.Login(&jwtData)
+
+		if success {
+			rw.Write([]byte(token))
+			return
+		}
 	}
+	rw.WriteHeader(http.StatusForbidden)
 }
