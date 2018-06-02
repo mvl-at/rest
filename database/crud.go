@@ -66,3 +66,19 @@ func GenericFetch(a interface{}) {
 		log(err)
 	}
 }
+
+func GenericSingleFetch(a interface{}) {
+	db, err := qbs.GetQbs()
+	defer db.Close()
+	db.Log = true
+
+	if err != nil {
+		log(err)
+		return
+	}
+
+	err = db.Find(a)
+	if err != nil {
+		log(err)
+	}
+}
