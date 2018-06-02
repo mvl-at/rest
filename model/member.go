@@ -14,5 +14,5 @@ type Member struct {
 	Password string `json:"password"`
 
 	Instrument   *Instrument `json:"instrument"`
-	InstrumentId int64       `qbs:"fk:Instrument"json:"instrumentId"`
+	InstrumentId int64       `qbs:"fk:Instrument" json:"instrumentId"`
 }
