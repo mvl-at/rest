@@ -53,7 +53,7 @@ func findMember(username string, password string) *model.Member {
 //TODO generate expiration and algorithm type
 func generateToken(member *model.Member) string {
 	header := JWTHeader{Algorithm: ""}
-	payload := JWTPayload{MemberId: member.Id}
+	payload := JWTPayload{MemberId: member.Id, Expiration: time.Now().Add(time.Minute * time.Duration(context.Conf.JwtExpiration))}
 	head, _ := json.Marshal(header)
 	pay, _ := json.Marshal(payload)
 	encodedHead := base64.URLEncoding.EncodeToString([]byte(head))

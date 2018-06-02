@@ -27,10 +27,11 @@ func config() (conf *Configuration) {
 		jwtSecret := make([]byte, 8)
 		rand.Read(jwtSecret)
 		conf = &Configuration{
-			Host:       "0.0.0.0",
-			Port:       8080,
-			SQLiteFile: "mvl.sqlite",
-			JwtSecret:  fmt.Sprintf("%x", jwtSecret)}
+			Host:          "0.0.0.0",
+			Port:          8080,
+			SQLiteFile:    "mvl.sqlite",
+			JwtSecret:     fmt.Sprintf("%x", jwtSecret),
+			JwtExpiration: 30}
 		enc := json.NewEncoder(fil)
 		enc.SetIndent("", "  ")
 		err = enc.Encode(conf)
@@ -46,8 +47,9 @@ func config() (conf *Configuration) {
 }
 
 type Configuration struct {
-	Host       string `json:"host"`
-	Port       uint16 `json:"port"`
-	SQLiteFile string `json:"sqliteFile"`
-	JwtSecret  string `json:"jwtSecret"`
+	Host          string `json:"host"`
+	Port          uint16 `json:"port"`
+	SQLiteFile    string `json:"sqliteFile"`
+	JwtSecret     string `json:"jwtSecret"`
+	JwtExpiration int    `json:"jwtExpiration"`
 }
