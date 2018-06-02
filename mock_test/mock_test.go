@@ -8,7 +8,6 @@ import (
 	"rest/database"
 	"rest/http"
 	"rest/model"
-	"rest/security"
 	"testing"
 	"time"
 )
@@ -19,7 +18,6 @@ func TestRunMock(t *testing.T) {
 	qbs.RegisterSqlite3(context.Conf.SQLiteFile)
 	database.Register()
 	mockData()
-	security.SessionClearer()
 	http.Routes()
 	http.Run()
 }

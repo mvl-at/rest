@@ -9,6 +9,7 @@ import (
 	"rest/context"
 	"rest/database"
 	"rest/model"
+	"strings"
 	"time"
 )
 
@@ -27,8 +28,6 @@ type JWTPayload struct {
 	Expiration time.Time `json:"exp"`
 }
 
-var sessions = map[string]*JWTPayload{}
-
 func Login(data *JWTData) (bool, string) {
 	member := findMember(data.Username, data.Password)
 
@@ -36,25 +35,8 @@ func Login(data *JWTData) (bool, string) {
 		return false, ""
 	}
 
-	token, payload := generateToken(member)
-	sessions[token] = payload
+	token := generateToken(member)
 	return true, token
-}
-
-func SessionClearer() {
-	go clearSessions()
-}
-
-func clearSessions() {
-	for {
-		time.Sleep(time.Minute * 1)
-		for k, v := range sessions {
-
-			if time.Now().After(v.Expiration) {
-				delete(sessions, k)
-			}
-		}
-	}
 }
 
 func findMember(username string, password string) *model.Member {
@@ -69,7 +51,7 @@ func findMember(username string, password string) *model.Member {
 }
 
 //TODO generate expiration and algorithm type
-func generateToken(member *model.Member) (string, *JWTPayload) {
+func generateToken(member *model.Member) string {
 	header := JWTHeader{Algorithm: ""}
 	payload := JWTPayload{MemberId: member.Id}
 	head, _ := json.Marshal(header)
@@ -80,5 +62,25 @@ func generateToken(member *model.Member) (string, *JWTPayload) {
 	sig := hmac.New(sha256.New, []byte(context.Conf.JwtSecret))
 	sig.Write([]byte(rawToken))
 	fullToken := rawToken + "." + hex.EncodeToString(sig.Sum(nil))
-	return fullToken, &payload
+	return fullToken
+}
+
+func fetchMember(id int64) *model.Member {
+	member := &model.Member{Id: id}
+	database.GenericSingleFetch(member)
+	return member
+}
+
+func Check(token string) (valid bool, member *model.Member) {
+	tokenParts := strings.Split(token, ".")
+	payloadJsonByte, _ := base64.URLEncoding.DecodeString(tokenParts[1])
+	payload := &JWTPayload{}
+	json.Unmarshal(payloadJsonByte, payload)
+	member = fetchMember(payload.MemberId)
+	valid = true
+	if token != generateToken(member) || time.Now().After(payload.Expiration) {
+		member = nil
+		valid = false
+	}
+	return
 }
