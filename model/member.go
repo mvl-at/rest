@@ -9,9 +9,8 @@ type Member struct {
 	Active       bool   `json:"active" roles:"member"`
 	Deleted      bool   `json:"deleted" roles:"member"`
 	LoginAllowed bool   `json:"loginAllowed"`
-	//TODO password salt and hash und omit in json
-	Username string `json:"username"`
-	Password string `json:"-"`
+	Username     string `json:"username"`
+	Password     string `json:"-"`
 
 	Instrument   *Instrument `json:"instrument" roles:"member"`
 	InstrumentId int64       `qbs:"fk:Instrument" json:"instrumentId" roles:"member"`
