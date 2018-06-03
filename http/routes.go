@@ -9,6 +9,7 @@ import (
 	"rest/database"
 	"rest/model"
 	"rest/security"
+	"strings"
 )
 
 func Routes() {
@@ -41,6 +42,56 @@ func get(rw http.ResponseWriter, r *http.Request, a interface{}) bool {
 			return false
 		}
 		return true
+	}
+	return false
+}
+
+func set(rw http.ResponseWriter, r *http.Request, a interface{}) bool {
+
+	if r.Method == "POST" {
+
+		token := r.Header.Get("token")
+		valid, member := security.Check(token)
+
+		if !valid || member == nil {
+			rw.WriteHeader(http.StatusForbidden)
+			return false
+		}
+		roles := make([]*model.RoleMember, 0)
+		database.GenericFetchWhereEqual(roles, "member_id", member.Id)
+		defaultValue := reflect.ValueOf(a)
+		entity := reflect.New(reflect.TypeOf(a))
+		rawEntity := make([]byte, 0)
+		r.Body.Read(rawEntity)
+		json.Unmarshal(rawEntity, entity)
+
+		databaseEntity := reflect.New(reflect.TypeOf(a))
+		if database.GenericSingleFetch(databaseEntity) {
+			defaultValue = databaseEntity
+		}
+
+		for i := 0; i < entity.Elem().NumField(); i++ {
+			definedRoles := entity.Elem().Type().Field(i).Tag.Get("roles")
+
+			if hasRole(roles, definedRoles) {
+				defaultValue.Elem().Field(i).Set(entity.Elem().Field(i))
+			}
+
+		}
+
+		database.GenericSave(entity)
+	}
+	return true
+}
+
+func hasRole(memberRoles []*model.RoleMember, definedRoles string) bool {
+
+	for _, definedRole := range strings.Split(definedRoles, ",") {
+		for _, memberRole := range memberRoles {
+			if memberRole.RoleId == definedRole {
+				return true
+			}
+		}
 	}
 	return false
 }
