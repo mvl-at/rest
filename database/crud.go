@@ -67,6 +67,22 @@ func GenericFetch(a interface{}) {
 	}
 }
 
+func GenericFetchWhereEqual(a interface{}, field string, value interface{}) {
+	db, err := qbs.GetQbs()
+	defer db.Close()
+	db.Log = true
+
+	if err != nil {
+		log(err)
+		return
+	}
+
+	err = db.WhereEqual(field, value).FindAll(a)
+	if err != nil {
+		log(err)
+	}
+}
+
 func GenericSingleFetch(a interface{}) {
 	db, err := qbs.GetQbs()
 	defer db.Close()
