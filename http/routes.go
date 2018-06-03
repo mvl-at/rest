@@ -79,7 +79,7 @@ func set(rw http.ResponseWriter, r *http.Request, a interface{}) bool {
 
 		}
 
-		database.GenericSave(entity)
+		database.GenericSave(defaultValue)
 	}
 	return true
 }
