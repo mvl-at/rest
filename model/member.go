@@ -11,7 +11,7 @@ type Member struct {
 	LoginAllowed bool   `json:"loginAllowed"`
 	//TODO password salt and hash und omit in json
 	Username string `json:"username"`
-	Password string `json:"password"`
+	Password string `json:"-"`
 
 	Instrument   *Instrument `json:"instrument" roles:"member"`
 	InstrumentId int64       `qbs:"fk:Instrument" json:"instrumentId" roles:"member"`
