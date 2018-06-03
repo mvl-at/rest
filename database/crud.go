@@ -1,6 +1,7 @@
 package database
 
 import (
+	"database/sql"
 	"github.com/mvl-at/qbs"
 	"rest/context"
 )
@@ -83,7 +84,8 @@ func GenericFetchWhereEqual(a interface{}, field string, value interface{}) {
 	}
 }
 
-func GenericSingleFetch(a interface{}) {
+func GenericSingleFetch(a interface{}) (exists bool) {
+	exists = false
 	db, err := qbs.GetQbs()
 	defer db.Close()
 	db.Log = true
@@ -94,7 +96,14 @@ func GenericSingleFetch(a interface{}) {
 	}
 
 	err = db.Find(a)
+
 	if err != nil {
-		log(err)
+
+		if err != sql.ErrNoRows {
+			log(err)
+		}
+	} else {
+		exists = true
 	}
+	return
 }
