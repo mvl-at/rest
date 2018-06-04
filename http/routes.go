@@ -45,16 +45,17 @@ func get(rw http.ResponseWriter, r *http.Request, a interface{}) bool {
 	return false
 }
 
-func set(rw http.ResponseWriter, r *http.Request, a interface{}) bool {
+func set(rw http.ResponseWriter, r *http.Request, a interface{}) (called bool) {
 
-	if r.Method == "POST" {
+	called = r.Method == "POST"
+	if called {
 
 		token := r.Header.Get("token")
 		valid, member := security.Check(token)
 
 		if !valid || member == nil {
 			rw.WriteHeader(http.StatusForbidden)
-			return false
+			return
 		}
 		roles := make([]*model.RoleMember, 0)
 		database.GenericFetchWhereEqual(roles, "member_id", member.Id)
@@ -79,9 +80,8 @@ func set(rw http.ResponseWriter, r *http.Request, a interface{}) bool {
 		}
 
 		database.GenericSave(defaultValue)
-		return true
 	}
-	return false
+	return
 }
 
 func hasRole(memberRoles []*model.RoleMember, definedRoles string) bool {
