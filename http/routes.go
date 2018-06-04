@@ -2,7 +2,6 @@ package http
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"reflect"
 	"rest/context"
@@ -80,8 +79,9 @@ func set(rw http.ResponseWriter, r *http.Request, a interface{}) bool {
 		}
 
 		database.GenericSave(defaultValue)
+		return true
 	}
-	return true
+	return false
 }
 
 func hasRole(memberRoles []*model.RoleMember, definedRoles string) bool {
@@ -98,62 +98,49 @@ func hasRole(memberRoles []*model.RoleMember, definedRoles string) bool {
 
 func events(rw http.ResponseWriter, r *http.Request) {
 
-	if !get(rw, r, &model.Event{}) {
+	if !get(rw, r, &model.Event{}) && !set(rw, r, &model.Event{}) {
 		rw.WriteHeader(http.StatusNotFound)
 	}
 }
 
 func instruments(rw http.ResponseWriter, r *http.Request) {
 
-	success := get(rw, r, &model.Instrument{})
-
-	if r.Method == "POST" {
-		instrument := model.Instrument{}
-		err := json.NewDecoder(r.Body).Decode(&instrument)
-		if err != nil {
-			log.Println(err.Error())
-		} else {
-			success = true
-			database.GenericSave(instrument)
-		}
-	}
-
-	if !success {
+	if !get(rw, r, &model.Instrument{}) && !set(rw, r, &model.Instrument{}) {
 		rw.WriteHeader(http.StatusNotFound)
 	}
 }
 
 func members(rw http.ResponseWriter, r *http.Request) {
 
-	if !get(rw, r, &model.Member{}) {
+	if !get(rw, r, &model.Member{}) && !set(rw, r, &model.Member{Deleted: false, Active: true, LoginAllowed: false}) {
 		rw.WriteHeader(http.StatusNotFound)
 	}
 }
 
 func roles(rw http.ResponseWriter, r *http.Request) {
 
-	if !get(rw, r, &model.Role{}) {
+	if !get(rw, r, &model.Role{}) && !set(rw, r, &model.Role{}) {
 		rw.WriteHeader(http.StatusNotFound)
 	}
 }
 
 func leaderRoles(rw http.ResponseWriter, r *http.Request) {
 
-	if !get(rw, r, &model.LeaderRole{}) {
+	if !get(rw, r, &model.LeaderRole{}) && !set(rw, r, &model.LeaderRole{}) {
 		rw.WriteHeader(http.StatusNotFound)
 	}
 }
 
 func leaderRolesMembers(rw http.ResponseWriter, r *http.Request) {
 
-	if !get(rw, r, &model.LeaderRoleMember{}) {
+	if !get(rw, r, &model.LeaderRoleMember{}) && !set(rw, r, &model.LeaderRoleMember{}) {
 		rw.WriteHeader(http.StatusNotFound)
 	}
 }
 
 func rolesMembers(rw http.ResponseWriter, r *http.Request) {
 
-	if !get(rw, r, &model.RoleMember{}) {
+	if !get(rw, r, &model.RoleMember{}) && !set(rw, r, &model.RoleMember{}) {
 		rw.WriteHeader(http.StatusNotFound)
 	}
 }
