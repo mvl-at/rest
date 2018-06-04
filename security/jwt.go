@@ -79,7 +79,7 @@ func Check(token string) (valid bool, member *model.Member) {
 	tokenParts := strings.Split(token, ".")
 	valid = false
 
-	if hash(tokenParts[0]+"."+tokenParts[1]) != tokenParts[2] {
+	if len(tokenParts) != 3 || hash(tokenParts[0]+"."+tokenParts[1]) != tokenParts[2] {
 		return
 	}
 
