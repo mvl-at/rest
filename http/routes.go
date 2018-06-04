@@ -2,6 +2,7 @@ package http
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"reflect"
 	"rest/context"
@@ -58,23 +59,29 @@ func set(rw http.ResponseWriter, r *http.Request, a interface{}) (called bool) {
 			return
 		}
 		roles := make([]*model.RoleMember, 0)
-		database.GenericFetchWhereEqual(roles, "member_id", member.Id)
+		database.GenericFetchWhereEqual(&roles, "member_id", member.Id)
 		defaultValue := reflect.ValueOf(a)
-		entity := reflect.New(reflect.TypeOf(a))
-		rawEntity := make([]byte, 0)
-		r.Body.Read(rawEntity)
-		json.Unmarshal(rawEntity, entity)
+		entityValue := reflect.New(reflect.TypeOf(a).Elem())
+		entity := entityValue.Elem().Interface()
+		rawEntity, _ := ioutil.ReadAll(r.Body)
+		err := json.Unmarshal(rawEntity, &entity)
 
-		databaseEntity := reflect.New(reflect.TypeOf(a))
-		if database.GenericSingleFetch(databaseEntity) {
-			defaultValue = databaseEntity
+		if err != nil {
+			context.ErrLog.Fatalln(err)
 		}
 
-		for i := 0; i < entity.Elem().NumField(); i++ {
-			definedRoles := entity.Elem().Type().Field(i).Tag.Get("roles")
+		databaseValue := reflect.New(reflect.TypeOf(a).Elem())
+		//databaseValue.Elem().Set(reflect.ValueOf(entity).Elem())
+		databaseEntity := reflect.ValueOf(entity).Elem().Interface()
+		if database.GenericSingleFetch(databaseEntity) {
+			defaultValue.Elem().Elem().Set(databaseValue.Elem().Elem())
+		}
+
+		for i := 0; i < entityValue.Elem().NumField(); i++ {
+			definedRoles := entityValue.Elem().Type().Field(i).Tag.Get("roles")
 
 			if hasRole(roles, definedRoles) {
-				defaultValue.Elem().Field(i).Set(entity.Elem().Field(i))
+				defaultValue.Elem().Field(i).Set(entityValue.Elem().Field(i))
 			}
 
 		}
