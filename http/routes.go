@@ -60,33 +60,27 @@ func set(rw http.ResponseWriter, r *http.Request, a interface{}) (called bool) {
 		}
 		roles := make([]*model.RoleMember, 0)
 		database.GenericFetchWhereEqual(&roles, "member_id", member.Id)
-		defaultValue := reflect.ValueOf(a)
-		entityValue := reflect.New(reflect.TypeOf(a).Elem())
-		entity := entityValue.Elem().Interface()
-		rawEntity, _ := ioutil.ReadAll(r.Body)
-		err := json.Unmarshal(rawEntity, &entity)
-
-		if err != nil {
-			context.ErrLog.Fatalln(err)
-		}
-
+		modifiedValue := reflect.New(reflect.TypeOf(a).Elem())
+		modified := modifiedValue.Interface()
+		modifiedRaw, _ := ioutil.ReadAll(r.Body)
+		json.Unmarshal(modifiedRaw, modified)
 		databaseValue := reflect.New(reflect.TypeOf(a).Elem())
-		//databaseValue.Elem().Set(reflect.ValueOf(entity).Elem())
-		databaseEntity := reflect.ValueOf(entity).Elem().Interface()
-		if database.GenericSingleFetch(databaseEntity) {
-			defaultValue.Elem().Elem().Set(databaseValue.Elem().Elem())
+		databaseValue.Elem().Set(modifiedValue.Elem())
+		databaseEntity := databaseValue.Interface()
+		if !database.GenericSingleFetch(databaseEntity) {
+			databaseEntity = a
 		}
-
-		for i := 0; i < entityValue.Elem().NumField(); i++ {
-			definedRoles := entityValue.Elem().Type().Field(i).Tag.Get("roles")
-
+		anyFieldChanges := false
+		for i := 0; i < databaseValue.Elem().NumField(); i++ {
+			definedRoles := databaseValue.Elem().Type().Field(i).Tag.Get("roles")
 			if hasRole(roles, definedRoles) {
-				defaultValue.Elem().Field(i).Set(entityValue.Elem().Field(i))
+				databaseValue.Elem().Field(i).Set(modifiedValue.Elem().Field(i))
+				anyFieldChanges = true
 			}
-
 		}
-
-		database.GenericSave(defaultValue)
+		if anyFieldChanges {
+			database.GenericSave(databaseEntity)
+		}
 	}
 	return
 }
