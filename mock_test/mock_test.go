@@ -108,8 +108,14 @@ func mockData() {
 		NamePlural: "Archivare"}
 
 	alk := &model.Role{
+		Id:         "alko",
 		Name:       "Alkoholrat",
 		NamePlural: "Alkoholräte"}
+
+	ins := &model.Role{
+		Id:         "instrument",
+		Name:       "Instrumenten Manager",
+		NamePlural: "Instrumenten Manager"}
 
 	willob := &model.LeaderRoleMember{
 		LeaderRole: obm,
@@ -130,11 +136,15 @@ func mockData() {
 		Role:   alk,
 		Member: felix}
 
+	willins := &model.RoleMember{
+		Role:   ins,
+		Member: willi}
+
 	members := []*model.Member{willi, felix, david, leo}
 	instruments := []*model.Instrument{flg, hrn, ten}
-	roles := []*model.Role{alk}
+	roles := []*model.Role{alk, ins}
 	leaderRoles := []*model.LeaderRole{obm, arc}
-	roleMembers := []*model.RoleMember{felalk}
+	roleMembers := []*model.RoleMember{felalk, willins}
 	leaderRoleMembers := []*model.LeaderRoleMember{willarc, willob, felarc}
 
 	for _, v := range events {
