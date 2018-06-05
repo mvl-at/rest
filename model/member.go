@@ -1,5 +1,7 @@
 package model
 
+import "github.com/mvl-at/qbs"
+
 type Member struct {
 	Id           int64  `json:"id"`
 	FirstName    string `json:"firstName" roles:"member"`
@@ -14,4 +16,12 @@ type Member struct {
 
 	Instrument   *Instrument `json:"instrument" roles:"member"`
 	InstrumentId int64       `qbs:"fk:Instrument" json:"instrumentId" roles:"member"`
+}
+
+func (m *Member) Validate(qbs *qbs.Qbs) error {
+
+	if m.Instrument != nil {
+		m.InstrumentId = m.Instrument.Id
+	}
+	return nil
 }
