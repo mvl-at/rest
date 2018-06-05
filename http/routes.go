@@ -69,6 +69,7 @@ func set(rw http.ResponseWriter, r *http.Request, a interface{}) (called bool) {
 		databaseEntity := databaseValue.Interface()
 		if !database.GenericSingleFetch(databaseEntity) {
 			databaseEntity = a
+			databaseValue = reflect.ValueOf(databaseEntity)
 		}
 		anyFieldChanges := false
 		for i := 0; i < databaseValue.Elem().NumField(); i++ {
