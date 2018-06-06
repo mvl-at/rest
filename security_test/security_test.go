@@ -1,8 +1,8 @@
-package mock_test
+package security_test
 
 import (
-	_ "github.com/mattn/go-sqlite3"
 	"github.com/mvl-at/qbs"
+	vhttp "net/http"
 	"os"
 	"rest/context"
 	"rest/database"
@@ -11,12 +11,17 @@ import (
 	"testing"
 )
 
-func TestRunMock(t *testing.T) {
+func setup() {
 	os.Remove(context.Conf.SQLiteFile)
 	qbs.SetLogger(context.Log, context.ErrLog)
 	qbs.RegisterSqlite3(context.Conf.SQLiteFile)
 	database.Register()
 	mock.MockData()
 	http.Routes()
-	http.Run()
+	go http.Run()
+}
+
+func TestInsert(t *testing.T) {
+
+	vhttp.hea
 }
