@@ -35,7 +35,7 @@ func httpGet(rw http.ResponseWriter, r *http.Request, a interface{}) bool {
 
 	if r.Method == http.MethodGet {
 		collection := reflect.New(reflect.SliceOf(reflect.TypeOf(a)))
-		database.GenericFetch(collection.Interface())
+		database.FindAll(collection.Interface())
 		err := json.NewEncoder(rw).Encode(collection.Interface())
 		if err != nil {
 			context.Log.Println(err.Error())
@@ -59,7 +59,7 @@ func httpPostPut(rw http.ResponseWriter, r *http.Request, a interface{}) (called
 			return
 		}
 		roles := make([]*model.RoleMember, 0)
-		database.GenericFetchWhereEqual(&roles, "member_id", member.Id)
+		database.FindAllWhereEqual(&roles, "member_id", member.Id)
 		modifiedValue := reflect.New(reflect.TypeOf(a).Elem())
 		modified := modifiedValue.Interface()
 		modifiedRaw, _ := ioutil.ReadAll(r.Body)
@@ -67,7 +67,7 @@ func httpPostPut(rw http.ResponseWriter, r *http.Request, a interface{}) (called
 		databaseValue := reflect.New(reflect.TypeOf(a).Elem())
 		databaseValue.Elem().Set(modifiedValue.Elem())
 		databaseEntity := databaseValue.Interface()
-		if !database.GenericSingleFetch(databaseEntity) {
+		if !database.Find(databaseEntity) {
 			databaseEntity = a
 			databaseValue = reflect.ValueOf(databaseEntity)
 		}
@@ -80,7 +80,7 @@ func httpPostPut(rw http.ResponseWriter, r *http.Request, a interface{}) (called
 			}
 		}
 		if anyFieldChanges {
-			database.GenericSave(databaseEntity)
+			database.Save(databaseEntity)
 		}
 	}
 	return
@@ -99,7 +99,7 @@ func httpDelete(rw http.ResponseWriter, r *http.Request, a interface{}) (called 
 			return
 		}
 		roles := make([]*model.RoleMember, 0)
-		database.GenericFetchWhereEqual(&roles, "member_id", member.Id)
+		database.FindAllWhereEqual(&roles, "member_id", member.Id)
 		modified := reflect.New(reflect.TypeOf(a).Elem()).Interface()
 		modifiedRaw, _ := ioutil.ReadAll(r.Body)
 		json.Unmarshal(modifiedRaw, modified)
@@ -112,7 +112,7 @@ func httpDelete(rw http.ResponseWriter, r *http.Request, a interface{}) (called 
 			}
 		}
 		if allowedFields >= modifiedValue.Elem().NumField()-1 {
-			database.GenericDelete(modified)
+			database.Delete(modified)
 		} else {
 			rw.WriteHeader(http.StatusForbidden)
 		}
