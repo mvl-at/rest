@@ -31,7 +31,7 @@ func rest(next http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-func get(rw http.ResponseWriter, r *http.Request, a interface{}) bool {
+func httpGet(rw http.ResponseWriter, r *http.Request, a interface{}) bool {
 
 	if r.Method == http.MethodGet {
 		collection := reflect.New(reflect.SliceOf(reflect.TypeOf(a)))
@@ -46,7 +46,7 @@ func get(rw http.ResponseWriter, r *http.Request, a interface{}) bool {
 	return false
 }
 
-func set(rw http.ResponseWriter, r *http.Request, a interface{}) (called bool) {
+func httpPostPut(rw http.ResponseWriter, r *http.Request, a interface{}) (called bool) {
 
 	called = r.Method == http.MethodPost || r.Method == http.MethodPut
 	if called {
@@ -86,7 +86,7 @@ func set(rw http.ResponseWriter, r *http.Request, a interface{}) (called bool) {
 	return
 }
 
-func del(rw http.ResponseWriter, r *http.Request, a interface{}) (called bool) {
+func httpDelete(rw http.ResponseWriter, r *http.Request, a interface{}) (called bool) {
 
 	called = r.Method == http.MethodDelete
 	if called {
@@ -134,49 +134,49 @@ func hasRole(memberRoles []*model.RoleMember, definedRoles string) bool {
 
 func events(rw http.ResponseWriter, r *http.Request) {
 
-	if !get(rw, r, &model.Event{}) && !set(rw, r, &model.Event{}) && !del(rw, r, &model.Event{}) {
+	if !httpGet(rw, r, &model.Event{}) && !httpPostPut(rw, r, &model.Event{}) && !httpDelete(rw, r, &model.Event{}) {
 		rw.WriteHeader(http.StatusNotFound)
 	}
 }
 
 func instruments(rw http.ResponseWriter, r *http.Request) {
 
-	if !get(rw, r, &model.Instrument{}) && !set(rw, r, &model.Instrument{}) && !del(rw, r, &model.Instrument{}) {
+	if !httpGet(rw, r, &model.Instrument{}) && !httpPostPut(rw, r, &model.Instrument{}) && !httpDelete(rw, r, &model.Instrument{}) {
 		rw.WriteHeader(http.StatusNotFound)
 	}
 }
 
 func members(rw http.ResponseWriter, r *http.Request) {
 
-	if !get(rw, r, &model.Member{}) && !set(rw, r, &model.Member{Deleted: false, Active: true, LoginAllowed: false}) && !del(rw, r, &model.Member{}) {
+	if !httpGet(rw, r, &model.Member{}) && !httpPostPut(rw, r, &model.Member{Deleted: false, Active: true, LoginAllowed: false}) && !httpDelete(rw, r, &model.Member{}) {
 		rw.WriteHeader(http.StatusNotFound)
 	}
 }
 
 func roles(rw http.ResponseWriter, r *http.Request) {
 
-	if !get(rw, r, &model.Role{}) && !set(rw, r, &model.Role{}) && !del(rw, r, &model.Role{}) {
+	if !httpGet(rw, r, &model.Role{}) && !httpPostPut(rw, r, &model.Role{}) && !httpDelete(rw, r, &model.Role{}) {
 		rw.WriteHeader(http.StatusNotFound)
 	}
 }
 
 func leaderRoles(rw http.ResponseWriter, r *http.Request) {
 
-	if !get(rw, r, &model.LeaderRole{}) && !set(rw, r, &model.LeaderRole{}) && !del(rw, r, &model.LeaderRole{}) {
+	if !httpGet(rw, r, &model.LeaderRole{}) && !httpPostPut(rw, r, &model.LeaderRole{}) && !httpDelete(rw, r, &model.LeaderRole{}) {
 		rw.WriteHeader(http.StatusNotFound)
 	}
 }
 
 func leaderRolesMembers(rw http.ResponseWriter, r *http.Request) {
 
-	if !get(rw, r, &model.LeaderRoleMember{}) && !set(rw, r, &model.LeaderRoleMember{}) && !del(rw, r, &model.LeaderRoleMember{}) {
+	if !httpGet(rw, r, &model.LeaderRoleMember{}) && !httpPostPut(rw, r, &model.LeaderRoleMember{}) && !httpDelete(rw, r, &model.LeaderRoleMember{}) {
 		rw.WriteHeader(http.StatusNotFound)
 	}
 }
 
 func rolesMembers(rw http.ResponseWriter, r *http.Request) {
 
-	if !get(rw, r, &model.RoleMember{}) && !set(rw, r, &model.RoleMember{}) && !del(rw, r, &model.RoleMember{}) {
+	if !httpGet(rw, r, &model.RoleMember{}) && !httpPostPut(rw, r, &model.RoleMember{}) && !httpDelete(rw, r, &model.RoleMember{}) {
 		rw.WriteHeader(http.StatusNotFound)
 	}
 }
