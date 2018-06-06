@@ -86,6 +86,40 @@ func set(rw http.ResponseWriter, r *http.Request, a interface{}) (called bool) {
 	return
 }
 
+func del(rw http.ResponseWriter, r *http.Request, a interface{}) (called bool) {
+
+	called = r.Method == "DELETE"
+	if called {
+
+		token := r.Header.Get("token")
+		valid, member := security.Check(token)
+
+		if !valid || member == nil {
+			rw.WriteHeader(http.StatusForbidden)
+			return
+		}
+		roles := make([]*model.RoleMember, 0)
+		database.GenericFetchWhereEqual(&roles, "member_id", member.Id)
+		modifiedValue := reflect.New(reflect.TypeOf(a).Elem())
+		modified := modifiedValue.Interface()
+		modifiedRaw, _ := ioutil.ReadAll(r.Body)
+		json.Unmarshal(modifiedRaw, modified)
+		allowedFields := 0
+		for i := 0; i < modifiedValue.Elem().NumField(); i++ {
+			definedRoles := modifiedValue.Elem().Type().Field(i).Tag.Get("roles")
+			if hasRole(roles, definedRoles) {
+				allowedFields++
+			}
+		}
+		if allowedFields >= modifiedValue.Elem().NumField() {
+			database.GenericDelete(modified)
+		} else {
+			rw.WriteHeader(http.StatusForbidden)
+		}
+	}
+	return
+}
+
 func hasRole(memberRoles []*model.RoleMember, definedRoles string) bool {
 
 	for _, definedRole := range strings.Split(definedRoles, ",") {
