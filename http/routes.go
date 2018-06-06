@@ -100,11 +100,11 @@ func del(rw http.ResponseWriter, r *http.Request, a interface{}) (called bool) {
 		}
 		roles := make([]*model.RoleMember, 0)
 		database.GenericFetchWhereEqual(&roles, "member_id", member.Id)
-		modifiedValue := reflect.New(reflect.TypeOf(a).Elem())
-		modified := modifiedValue.Interface()
+		modified := reflect.New(reflect.TypeOf(a).Elem()).Interface()
 		modifiedRaw, _ := ioutil.ReadAll(r.Body)
 		json.Unmarshal(modifiedRaw, modified)
 		allowedFields := 0
+		modifiedValue := reflect.ValueOf(modified)
 		for i := 0; i < modifiedValue.Elem().NumField(); i++ {
 			definedRoles := modifiedValue.Elem().Type().Field(i).Tag.Get("roles")
 			if hasRole(roles, definedRoles) {
