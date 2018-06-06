@@ -33,7 +33,7 @@ func rest(next http.HandlerFunc) http.HandlerFunc {
 
 func get(rw http.ResponseWriter, r *http.Request, a interface{}) bool {
 
-	if r.Method == "GET" {
+	if r.Method == http.MethodGet {
 		collection := reflect.New(reflect.SliceOf(reflect.TypeOf(a)))
 		database.GenericFetch(collection.Interface())
 		err := json.NewEncoder(rw).Encode(collection.Interface())
@@ -48,7 +48,7 @@ func get(rw http.ResponseWriter, r *http.Request, a interface{}) bool {
 
 func set(rw http.ResponseWriter, r *http.Request, a interface{}) (called bool) {
 
-	called = r.Method == "POST"
+	called = r.Method == http.MethodPost || r.Method == http.MethodPut
 	if called {
 
 		token := r.Header.Get("token")
@@ -88,7 +88,7 @@ func set(rw http.ResponseWriter, r *http.Request, a interface{}) (called bool) {
 
 func del(rw http.ResponseWriter, r *http.Request, a interface{}) (called bool) {
 
-	called = r.Method == "DELETE"
+	called = r.Method == http.MethodDelete
 	if called {
 
 		token := r.Header.Get("token")
