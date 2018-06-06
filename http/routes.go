@@ -111,7 +111,7 @@ func del(rw http.ResponseWriter, r *http.Request, a interface{}) (called bool) {
 				allowedFields++
 			}
 		}
-		if allowedFields >= modifiedValue.Elem().NumField() {
+		if allowedFields >= modifiedValue.Elem().NumField()-1 {
 			database.GenericDelete(modified)
 		} else {
 			rw.WriteHeader(http.StatusForbidden)
