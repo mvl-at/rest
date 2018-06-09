@@ -5,11 +5,11 @@ import (
 )
 
 func Register() {
-	GenericCreate(&model.Event{})
-	GenericCreate(&model.Instrument{})
-	GenericCreate(&model.Member{})
-	GenericCreate(&model.LeaderRole{})
-	GenericCreate(&model.LeaderRoleMember{})
-	GenericCreate(&model.Role{})
-	GenericCreate(&model.RoleMember{})
+	TableCreate(&model.Event{})
+	TableCreate(&model.Instrument{})
+	TableCreate(&model.Member{})
+	TableCreate(&model.LeaderRole{})
+	TableCreate(&model.LeaderRoleMember{})
+	TableCreate(&model.Role{})
+	TableCreate(&model.RoleMember{})
 }

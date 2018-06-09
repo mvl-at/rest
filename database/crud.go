@@ -13,14 +13,14 @@ func log(err error) {
 	}
 }
 
-func GenericCreate(a interface{}) {
+func TableCreate(a interface{}) {
 	m, _ := qbs.GetMigration()
 
 	err := m.CreateTableIfNotExists(a)
 	log(err)
 }
 
-func GenericDelete(a interface{}) {
+func Delete(a interface{}) {
 	db, err := qbs.GetQbs()
 	defer db.Close()
 	db.Log = true
@@ -36,7 +36,7 @@ func GenericDelete(a interface{}) {
 	}
 }
 
-func GenericSave(a interface{}) {
+func Save(a interface{}) {
 	db, err := qbs.GetQbs()
 	defer db.Close()
 	db.Log = true
@@ -52,7 +52,7 @@ func GenericSave(a interface{}) {
 	}
 }
 
-func GenericFetch(a interface{}) {
+func FindAll(a interface{}) {
 	db, err := qbs.GetQbs()
 	defer db.Close()
 	db.Log = true
@@ -68,7 +68,7 @@ func GenericFetch(a interface{}) {
 	}
 }
 
-func GenericFetchWhereEqual(a interface{}, field string, value interface{}) {
+func FindAllWhereEqual(a interface{}, field string, value interface{}) {
 	db, err := qbs.GetQbs()
 	defer db.Close()
 	db.Log = true
@@ -84,7 +84,7 @@ func GenericFetchWhereEqual(a interface{}, field string, value interface{}) {
 	}
 }
 
-func GenericSingleFetch(a interface{}) (exists bool) {
+func Find(a interface{}) (exists bool) {
 	exists = false
 	db, err := qbs.GetQbs()
 	defer db.Close()

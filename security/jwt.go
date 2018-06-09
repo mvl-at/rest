@@ -41,7 +41,7 @@ func Login(data *JWTData) (bool, string) {
 
 func findMember(username string, password string) *model.Member {
 	members := make([]*model.Member, 0)
-	database.GenericFetch(&members)
+	database.FindAll(&members)
 	for _, v := range members {
 		if v.Username == username && v.Password == password {
 			return v
@@ -71,7 +71,7 @@ func hash(rawToken string) string {
 
 func fetchMember(id int64) *model.Member {
 	member := &model.Member{Id: id}
-	database.GenericSingleFetch(member)
+	database.Find(member)
 	return member
 }
 

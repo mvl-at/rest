@@ -132,26 +132,26 @@ func MockData() {
 	leaderRoleMembers := []*model.LeaderRoleMember{willarc, willob, felarc}
 
 	for _, v := range events {
-		database.GenericSave(v)
+		database.Save(v)
 	}
 	for _, v := range instruments {
-		database.GenericSave(v)
+		database.Save(v)
 	}
 	for _, v := range roles {
-		database.GenericSave(v)
+		database.Save(v)
 	}
 	for _, v := range leaderRoles {
-		database.GenericSave(v)
+		database.Save(v)
 	}
 	for _, v := range members {
-		database.GenericSave(v)
+		database.Save(v)
 	}
 
 	for _, v := range roleMembers {
-		database.GenericSave(v)
+		database.Save(v)
 	}
 
 	for _, v := range leaderRoleMembers {
-		database.GenericSave(v)
+		database.Save(v)
 	}
 }
