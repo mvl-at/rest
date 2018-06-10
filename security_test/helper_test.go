@@ -16,7 +16,9 @@ import (
 	"rest/mock"
 	"rest/model"
 	"rest/security"
+	"strings"
 	"testing"
+	"time"
 )
 
 var willi = &model.Member{Username: "willi", Password: "123456"}
@@ -66,8 +68,43 @@ func pathName(a interface{}) (path string) {
 	return
 }
 
-func saveData(a interface{}, issuer *model.Member, t *testing.T)   {}
-func deleteData(a interface{}, issuer *model.Member, t *testing.T) {}
+func saveData(a interface{}, shouldExistAfter bool, issuer *model.Member, t *testing.T) {
+	request("/"+pathName(a), vhttp.MethodPost, a, issuer)
+	if exists(a) != shouldExistAfter {
+
+		if shouldExistAfter {
+			t.Errorf("%s should exist but does not!", a)
+		} else {
+			t.Errorf("%s should not exist but does!", a)
+		}
+	}
+}
+
+func deleteData(a interface{}, shouldExistAfter bool, issuer *model.Member, t *testing.T) {
+	request("/"+pathName(a), vhttp.MethodDelete, a, issuer)
+	if exists(a) != shouldExistAfter {
+
+		if shouldExistAfter {
+			t.Errorf("%s should exist but does not!", a)
+		} else {
+			t.Errorf("%s should not exist but does!", a)
+		}
+	}
+}
+
+func exists(equality interface{}) bool {
+	sli := reflect.New(reflect.SliceOf(reflect.TypeOf(equality))).Interface()
+	database.FindAll(sli)
+
+	sliceValue := reflect.ValueOf(sli).Elem()
+
+	for i := 0; i < sliceValue.Len(); i++ {
+		if equal(equality, sliceValue.Index(i).Interface()) {
+			return true
+		}
+	}
+	return false
+}
 
 func token(member *model.Member) string {
 	data := &security.JWTData{Username: member.Username, Password: member.Password}
@@ -101,125 +138,33 @@ func request(url string, method string, data interface{}, issuer *model.Member) 
 	return
 }
 
-type instrument struct {
-	model.Instrument
-}
-
-type event struct {
-	model.Event
-}
-
-type member struct {
-	model.Member
-}
-
-type role struct {
-	model.Role
-}
-
-type leaderRole struct {
-	model.LeaderRole
-}
-
-type roleMember struct {
-	model.RoleMember
-}
-
-type leaderRoleMember struct {
-	model.LeaderRoleMember
-}
-
-type testEquality interface {
-	equal(other testEquality) bool
-}
-
-func (i instrument) equal(other testEquality) bool {
-	otherIns, ok := other.(instrument)
-
-	if !ok {
+func equal(a interface{}, b interface{}) bool {
+	aType := reflect.TypeOf(a).Elem()
+	if aType.Name() != reflect.TypeOf(b).Elem().Name() {
 		return false
 	}
+	aValue := reflect.ValueOf(a).Elem()
+	bValue := reflect.ValueOf(b).Elem()
 
-	return otherIns.Name == i.Name && otherIns.NamePlural == i.NamePlural
-}
+	equal := true
 
-func (e event) equal(other testEquality) bool {
-	o, ok := other.(event)
+	for i := 0; i < aValue.NumField() && equal; i++ {
+		aField := aValue.Field(i)
+		bField := bValue.Field(i)
 
-	if !ok {
-		return false
+		typeName := aType.Field(i).Name
+
+		if !strings.HasSuffix(typeName, "Id") && typeName != reflect.TypeOf(time.Time{}).Name() && aField.Kind() != reflect.Ptr {
+			equal = aField.Interface() == bField.Interface()
+		} else {
+			aTime, ok := aField.Interface().(time.Time)
+
+			if ok {
+				bTime, _ := bField.Interface().(time.Time)
+				equal = aTime.Unix() == bTime.Unix()
+			}
+		}
+
 	}
-
-	return e.Name == o.Name &&
-		e.Internal == o.Internal &&
-		e.Important == o.Important &&
-		e.Note == o.Note &&
-		e.Date.Unix() == o.Date.Unix() &&
-		e.MusicianTime.Unix() == o.Date.Unix() &&
-		e.Time.Unix() == o.Time.Unix() &&
-		e.Place == o.Place &&
-		e.MusicianPlace == o.MusicianPlace &&
-		e.Uniform == o.Uniform
-}
-
-func (m member) equal(other testEquality) bool {
-	o, ok := other.(member)
-
-	if !ok {
-		return false
-	}
-
-	return m.InstrumentId == o.InstrumentId &&
-		m.LoginAllowed == o.LoginAllowed &&
-		m.Username == o.Username &&
-		m.Active == o.Active &&
-		m.Deleted == o.Deleted &&
-		m.Joined == o.Joined &&
-		m.LastName == o.LastName &&
-		m.FirstName == o.FirstName &&
-		m.Picture == o.Picture
-}
-
-func (r role) equal(other testEquality) bool {
-	o, ok := other.(role)
-
-	if !ok {
-		return false
-	}
-
-	return r.Name == o.Name &&
-		r.NamePlural == o.NamePlural
-}
-
-func (l leaderRole) equal(other testEquality) bool {
-	o, ok := other.(leaderRole)
-
-	if !ok {
-		return false
-	}
-	return l.NamePlural == o.NamePlural &&
-		l.Name == o.Name
-}
-
-func (r roleMember) equal(other testEquality) bool {
-	o, ok := other.(roleMember)
-
-	if !ok {
-		return false
-	}
-
-	return r.RoleId == o.RoleId &&
-		r.MemberId == o.MemberId
-}
-
-func (l leaderRoleMember) equal(other testEquality) bool {
-	o, ok := other.(leaderRoleMember)
-
-	if !ok {
-		return false
-	}
-
-	return l.LeaderRoleId == o.LeaderRoleId &&
-		l.MemberId == o.MemberId &&
-		l.Priority == o.Priority
+	return equal
 }
