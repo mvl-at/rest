@@ -124,7 +124,7 @@ func hasRole(memberRoles []*model.RoleMember, definedRoles string) bool {
 
 	for _, definedRole := range strings.Split(definedRoles, ",") {
 		for _, memberRole := range memberRoles {
-			if memberRole.RoleId == definedRole {
+			if memberRole.RoleId == definedRole || memberRole.RoleId == "root" {
 				return true
 			}
 		}
