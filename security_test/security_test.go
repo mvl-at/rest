@@ -9,7 +9,7 @@ import (
 )
 
 func TestInsert(t *testing.T) {
-	tuba := &model.Instrument{Name: "Tuba", NamePlural: "Tuben"}
+	tuba := &instrument{model.Instrument{Name: "Tuba", NamePlural: "Tuben"}}
 	request("/instruments", vhttp.MethodPost, tuba, willi)
 	tuben := make([]*model.Instrument, 0)
 	database.FindAll(&tuben)
