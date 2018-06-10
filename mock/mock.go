@@ -59,7 +59,8 @@ var Helmut = &model.Member{
 	Active:       true,
 	Deleted:      false,
 	LoginAllowed: true,
-	Instrument:   Tenorhorn}
+	Instrument:   Tenorhorn,
+	Password:     "dfldfg"}
 var Karl = &model.Member{
 	FirstName:    "Karl",
 	LastName:     "Baum",
@@ -67,7 +68,8 @@ var Karl = &model.Member{
 	Active:       true,
 	Deleted:      false,
 	LoginAllowed: true,
-	Instrument:   Fluegelhorn}
+	Instrument:   Fluegelhorn,
+	Password:     "dfghhj"}
 var Franz = &model.Member{
 	FirstName:    "Franz",
 	LastName:     "Moos",
@@ -75,7 +77,8 @@ var Franz = &model.Member{
 	Active:       false,
 	Deleted:      true,
 	LoginAllowed: false,
-	Instrument:   Horn}
+	Instrument:   Horn,
+	Password:     "giogftr"}
 var Josef = &model.Member{
 	FirstName:    "Josef",
 	LastName:     "Strauch",
@@ -83,7 +86,8 @@ var Josef = &model.Member{
 	Active:       true,
 	Deleted:      false,
 	LoginAllowed: true,
-	Instrument:   Tenorhorn}
+	Instrument:   Tenorhorn,
+	Password:     "dfg"}
 
 var Obmann = &model.LeaderRole{Name: "Obmann", NamePlural: "Obmänner"}
 var Archivar = &model.LeaderRole{Name: "Archivar", NamePlural: "Archivare"}
