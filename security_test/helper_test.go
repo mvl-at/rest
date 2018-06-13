@@ -152,19 +152,23 @@ func equal(a interface{}, b interface{}) bool {
 		aField := aValue.Field(i)
 		bField := bValue.Field(i)
 
-		typeName := aType.Field(i).Name
+		fieldName := aType.Field(i).Name
 
-		if !strings.HasSuffix(typeName, "Id") && typeName != reflect.TypeOf(time.Time{}).Name() && aField.Kind() != reflect.Ptr {
+		if !strings.HasSuffix(fieldName, "Id") && reflect.TypeOf(aField.Interface()).Name() != reflect.TypeOf(time.Time{}).Name() && aField.Kind() != reflect.Ptr {
 			equal = aField.Interface() == bField.Interface()
 		} else {
 			aTime, ok := aField.Interface().(time.Time)
 
 			if ok {
 				bTime, _ := bField.Interface().(time.Time)
-				equal = aTime.Unix() == bTime.Unix()
+				equal = timeEqual(aTime, bTime)
 			}
 		}
 
 	}
 	return equal
+}
+
+func timeEqual(t1 time.Time, t2 time.Time) bool {
+	return t1.Minute() == t2.Minute() && t1.Hour() == t2.Hour() && t1.Day() == t2.Day() && t1.Month() == t2.Month() && t1.Year() == t2.Year() && t1.Second() == t2.Second()
 }
