@@ -2,6 +2,7 @@ package security_test
 
 import (
 	_ "github.com/mattn/go-sqlite3"
+	"rest/database"
 	. "rest/mock"
 	"rest/model"
 	"testing"
@@ -59,4 +60,27 @@ func TestHelmutInsertWeihnachtsfeier(t *testing.T) {
 		Important:     false,
 		Internal:      true}
 	saveData(event, true, Helmut, t)
+}
+
+func TestKeepLastRoot(t *testing.T) {
+	members := make([]*model.Member, 0)
+	database.FindAll(&members)
+	for _, member := range members {
+		database.Delete(member)
+	}
+	members = make([]*model.Member, 0)
+	database.FindAll(&members)
+	rolesMembers := make([]*model.RoleMember, 0)
+	database.FindAll(&rolesMembers)
+	someOneWithRoot := false
+	for _, member := range members {
+		for _, role := range rolesMembers {
+			if role.MemberId == member.Id && role.RoleId == "root" {
+				someOneWithRoot = true
+			}
+		}
+	}
+	if !someOneWithRoot {
+		t.Error("all members with root are deleted!")
+	}
 }
