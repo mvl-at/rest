@@ -12,6 +12,7 @@ func Setup() {
 	qbs.SetLogger(context.Log, context.ErrLog)
 	qbs.RegisterSqlite3(context.Conf.SQLiteFile)
 	database.Register()
+	database.CheckRoot()
 	http.Routes()
 	http.Run()
 }
