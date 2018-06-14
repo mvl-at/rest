@@ -3,8 +3,18 @@ package database
 import (
 	"database/sql"
 	"github.com/mvl-at/qbs"
+	"reflect"
 	"rest/context"
+	"rest/model"
 )
+
+type DBError struct {
+	message string
+}
+
+func (d DBError) Error() string {
+	return d.message
+}
 
 func log(err error) {
 
@@ -28,6 +38,18 @@ func Delete(a interface{}) {
 	if err != nil {
 		log(err)
 		return
+	}
+
+	if reflect.TypeOf(a) == reflect.TypeOf(&model.Member{}) {
+		member := a.(*model.Member)
+		roleMemberRoot := make([]*model.RoleMember, 0)
+		db.WhereEqual("role_id", "root").FindAll(&roleMemberRoot)
+		lastRoot := len(roleMemberRoot) <= 1
+
+		if lastRoot && roleMemberRoot[0].MemberId == member.Id {
+			log(DBError{"cannot delete last root!"})
+			return
+		}
 	}
 
 	_, err = db.Delete(a)
