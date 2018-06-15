@@ -2,12 +2,14 @@ package model
 
 import "github.com/mvl-at/qbs"
 
+//Defines a leader role.
 type LeaderRole struct {
 	Id         int64  `json:"id"`
 	Name       string `json:"name" roles:"leader"`
 	NamePlural string `json:"namePlural" roles:"leader"`
 }
 
+//Defines the relation between a leader role an a member.
 type LeaderRoleMember struct {
 	Id           int64       `json:"id"`
 	LeaderRole   *LeaderRole `json:"leaderRole" roles:"leader"`
@@ -17,6 +19,7 @@ type LeaderRoleMember struct {
 	Priority     int         `json:"priority" roles:"leader"`
 }
 
+//Validates all association pointers and assign its id fields to the one of LeaderRoleMember.
 func (l *LeaderRoleMember) Validate(qbs *qbs.Qbs) error {
 
 	if l.Member != nil {

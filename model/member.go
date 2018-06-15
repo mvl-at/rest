@@ -2,6 +2,7 @@ package model
 
 import "github.com/mvl-at/qbs"
 
+//Defines a member.
 type Member struct {
 	Id           int64  `json:"id"`
 	FirstName    string `json:"firstName" roles:"member"`
@@ -18,6 +19,7 @@ type Member struct {
 	InstrumentId int64       `qbs:"fk:Instrument" json:"instrumentId" roles:"member"`
 }
 
+//Validates all association pointers and assign its id fields to the one of Member.
 func (m *Member) Validate(qbs *qbs.Qbs) error {
 
 	if m.Instrument != nil {

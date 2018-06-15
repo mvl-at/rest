@@ -2,6 +2,7 @@ package model
 
 import "time"
 
+//Defines an event.
 type Event struct {
 	Id            int64     `json:"id"`
 	Date          time.Time `json:"date" roles:"event"`

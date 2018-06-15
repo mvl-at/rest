@@ -7,6 +7,7 @@ import (
 	"rest/context"
 )
 
+//Serves the http application and logs it.
 func Run() {
 	host := fmt.Sprintf("%s:%d", context.Conf.Host, context.Conf.Port)
 	context.Log.Println("Listen on " + host)

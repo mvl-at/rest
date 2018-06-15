@@ -104,6 +104,7 @@ var Events = &model.Role{Id: "event", Name: "Termine", NamePlural: "Termine"}
 var HelmutEvents = &model.RoleMember{Member: Helmut, Role: Events}
 var FranzCredentials = &model.RoleMember{Member: Franz, Role: Credentials}
 
+//Initializes all mock data.
 func MockData() {
 	events := []*model.Event{Fruehschoppen, Generalversammlung, Marschmusikwertung}
 	members := []*model.Member{Paul, Helmut, Karl, Franz, Josef}

@@ -2,12 +2,14 @@ package model
 
 import "github.com/mvl-at/qbs"
 
+//Defines a role.
 type Role struct {
 	Id         string `qbs:"pk" json:"id"`
 	Name       string `json:"name"`
 	NamePlural string `json:"namePlural"`
 }
 
+//Defines the relation between a role and a member.
 type RoleMember struct {
 	Id       int64   `json:"id"`
 	Role     *Role   `json:"role"`
@@ -16,6 +18,7 @@ type RoleMember struct {
 	MemberId int64   `qbs:"fk:Member" json:"memberId"`
 }
 
+//Validates all association pointers and assign its id fields to the one of RoleMember.
 func (r *RoleMember) Validate(qbs *qbs.Qbs) error {
 
 	if r.Member != nil {
