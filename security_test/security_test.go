@@ -85,3 +85,8 @@ func TestFranzUpdateKarlCredentials(t *testing.T) {
 	credentials := &security.Credentials{MemberId: Karl.Id, Password: Karl.Password + "67", Username: Karl.Username + "df"}
 	updateCredentials(credentials, true, true, Franz, t)
 }
+
+func TestFranzUpdatePaulCredentials(t *testing.T) {
+	credentials := &security.Credentials{MemberId: Paul.Id, Password: Paul.Password + "67", Username: Paul.Username}
+	updateCredentials(credentials, false, true, Franz, t)
+}
