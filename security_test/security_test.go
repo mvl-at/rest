@@ -2,6 +2,7 @@ package security_test
 
 import (
 	_ "github.com/mattn/go-sqlite3"
+	"rest/database"
 	. "rest/mock"
 	"rest/model"
 	"rest/security"
@@ -63,7 +64,9 @@ func TestHelmutInsertWeihnachtsfeier(t *testing.T) {
 }
 
 func TestKeepLastRoot(t *testing.T) {
-	deleteData(Josef, true, Josef, t)
+	newJosef := &model.Member{Id: Josef.Id}
+	database.Find(newJosef)
+	deleteData(newJosef, true, Josef, t)
 }
 
 func TestKarlUpdateOwnPassword(t *testing.T) {
@@ -83,7 +86,7 @@ func TestJosefUpdateHelmutCredentials(t *testing.T) {
 
 func TestFranzUpdateKarlCredentials(t *testing.T) {
 	credentials := &security.Credentials{MemberId: Karl.Id, Password: Karl.Password + "67", Username: Karl.Username + "df"}
-	updateCredentials(credentials, true, true, Franz, t)
+	updateCredentials(credentials, false, false, Franz, t)
 }
 
 func TestFranzUpdatePaulCredentials(t *testing.T) {

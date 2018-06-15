@@ -3,6 +3,7 @@ package mock
 import (
 	"rest/database"
 	"rest/model"
+	"rest/security"
 	"time"
 )
 
@@ -126,6 +127,9 @@ func MockData() {
 	}
 	for _, v := range members {
 		database.Save(v)
+		persistenceMember := *v
+		persistenceMember.Password = security.PasswordHash(v.Password)
+		database.Save(&persistenceMember)
 	}
 
 	for _, v := range roleMembers {

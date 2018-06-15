@@ -1,7 +1,6 @@
 package security
 
 import (
-	"encoding/hex"
 	"golang.org/x/crypto/bcrypt"
 	"rest/database"
 	"rest/model"
@@ -13,9 +12,9 @@ type Credentials struct {
 	Password string `json:"password"`
 }
 
-func passwordHash(plainPassword string) string {
+func PasswordHash(plainPassword string) string {
 	sig, _ := bcrypt.GenerateFromPassword([]byte(plainPassword), bcrypt.DefaultCost)
-	return hex.EncodeToString(sig)
+	return string(sig)
 }
 
 func passwordCorrect(plainPassword string, hashedPassword string) bool {
@@ -27,7 +26,7 @@ func UpdateCredentials(credentials *Credentials) {
 	database.Find(member)
 	if member != nil {
 		member.Username = credentials.Username
-		member.Password = passwordHash(credentials.Password)
+		member.Password = PasswordHash(credentials.Password)
 		database.Save(member)
 	}
 }
