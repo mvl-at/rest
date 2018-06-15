@@ -92,6 +92,7 @@ var Josef = &model.Member{
 var Obmann = &model.LeaderRole{Name: "Obmann", NamePlural: "Obmänner"}
 var Archivar = &model.LeaderRole{Name: "Archivar", NamePlural: "Archivare"}
 var Root = &model.Role{Id: "root", Name: "Root", NamePlural: "Root"}
+var Credentials = &model.Role{Id: "credentials", Name: "Login Verwalter", NamePlural: "Login Verwalter"}
 var Instrumente = &model.Role{Id: "instrument", Name: "Instrumenten Manager", NamePlural: "Instrumenten Manager"}
 var PaulObmann = &model.LeaderRoleMember{LeaderRole: Obmann, Member: Paul, Priority: 0}
 var HelmutArchivar = &model.LeaderRoleMember{LeaderRole: Archivar, Member: Helmut, Priority: 0}
@@ -100,6 +101,7 @@ var JosefRoot = &model.RoleMember{Role: Root, Member: Josef}
 var PaulInstrumente = &model.RoleMember{Role: Instrumente, Member: Paul}
 var Events = &model.Role{Id: "event", Name: "Termine", NamePlural: "Termine"}
 var HelmutEvents = &model.RoleMember{Member: Helmut, Role: Events}
+var FranzCredentials = &model.RoleMember{Member: Franz, Role: Credentials}
 
 func MockData() {
 	events := []*model.Event{Fruehschoppen, Generalversammlung, Marschmusikwertung}
@@ -107,7 +109,7 @@ func MockData() {
 	instruments := []*model.Instrument{Fluegelhorn, Horn, Tenorhorn}
 	roles := []*model.Role{Root, Instrumente}
 	leaderRoles := []*model.LeaderRole{Obmann, Archivar}
-	roleMembers := []*model.RoleMember{JosefRoot, PaulInstrumente, HelmutEvents}
+	roleMembers := []*model.RoleMember{JosefRoot, PaulInstrumente, HelmutEvents, FranzCredentials}
 	leaderRoleMembers := []*model.LeaderRoleMember{PaulArchivarStellvertreter, PaulObmann, HelmutArchivar}
 
 	for _, v := range events {

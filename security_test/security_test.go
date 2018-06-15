@@ -4,6 +4,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	. "rest/mock"
 	"rest/model"
+	"rest/security"
 	"testing"
 	"time"
 )
@@ -63,4 +64,24 @@ func TestHelmutInsertWeihnachtsfeier(t *testing.T) {
 
 func TestKeepLastRoot(t *testing.T) {
 	deleteData(Josef, true, Josef, t)
+}
+
+func TestKarlUpdateOwnPassword(t *testing.T) {
+	credentials := &security.Credentials{MemberId: Karl.Id, Password: Karl.Password + "67", Username: Karl.Username + "df"}
+	updateCredentials(credentials, false, true, Karl, t)
+}
+
+func TestKarlUpdateHelmutCredentials(t *testing.T) {
+	credentials := &security.Credentials{MemberId: Helmut.Id, Password: Helmut.Password + "67", Username: Karl.Username + "df"}
+	updateCredentials(credentials, false, false, Karl, t)
+}
+
+func TestJosefUpdateHelmutCredentials(t *testing.T) {
+	credentials := &security.Credentials{MemberId: Helmut.Id, Password: Helmut.Password + "67", Username: Helmut.Username + "df"}
+	updateCredentials(credentials, true, true, Josef, t)
+}
+
+func TestFranzUpdateKarlCredentials(t *testing.T) {
+	credentials := &security.Credentials{MemberId: Karl.Id, Password: Karl.Password + "67", Username: Karl.Username + "df"}
+	updateCredentials(credentials, true, true, Franz, t)
 }

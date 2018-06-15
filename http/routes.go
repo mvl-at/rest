@@ -21,6 +21,7 @@ func Routes() {
 	http.HandleFunc("/leaderRoles", rest(leaderRoles))
 	http.HandleFunc("/leaderRolesMembers", rest(leaderRolesMembers))
 	http.HandleFunc("/login", rest(login))
+	http.HandleFunc("/credentials", rest(credentials))
 }
 
 func rest(next http.HandlerFunc) http.HandlerFunc {
@@ -196,4 +197,30 @@ func login(rw http.ResponseWriter, r *http.Request) {
 		}
 	}
 	rw.WriteHeader(http.StatusForbidden)
+}
+
+func credentials(rw http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost && r.Method != http.MethodPut {
+		rw.WriteHeader(http.StatusNotFound)
+	}
+	token := r.Header.Get("token")
+	valid, member := security.Check(token)
+	if !valid || member == nil {
+		rw.WriteHeader(http.StatusForbidden)
+		return
+	}
+	credentials := &security.Credentials{}
+	json.NewDecoder(r.Body).Decode(credentials)
+	roles := make([]*model.RoleMember, 0)
+	database.FindAllWhereEqual(&roles, "member_id", member.Id)
+	if hasRole(roles, "credentials") {
+		security.UpdateCredentials(credentials)
+	} else {
+		if member.Id == credentials.MemberId {
+			credentials.Username = member.Username
+			security.UpdateCredentials(credentials)
+		} else {
+			rw.WriteHeader(http.StatusForbidden)
+		}
+	}
 }

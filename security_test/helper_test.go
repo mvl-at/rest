@@ -172,3 +172,33 @@ func equal(a interface{}, b interface{}) bool {
 func timeEqual(t1 time.Time, t2 time.Time) bool {
 	return t1.Minute() == t2.Minute() && t1.Hour() == t2.Hour() && t1.Day() == t2.Day() && t1.Month() == t2.Month() && t1.Year() == t2.Year() && t1.Second() == t2.Second()
 }
+
+func updateCredentials(credentials *security.Credentials, username bool, password bool, issuer *model.Member, t *testing.T) {
+	oldMember := &model.Member{Id: credentials.MemberId}
+	database.Find(oldMember)
+	_, status := request("/credentials", vhttp.MethodPost, credentials, issuer)
+	if status == vhttp.StatusForbidden {
+		if username && password {
+			t.Errorf("%s should be able to set credentials %s but was not able to!", issuer, credentials)
+		}
+		return
+	}
+	newMember := &model.Member{Id: credentials.MemberId}
+	database.Find(newMember)
+
+	if username && oldMember.Username == newMember.Username {
+		t.Errorf("%s should be able to set username of %s but was not able to!", issuer, credentials)
+	}
+
+	if password && oldMember.Password == newMember.Password {
+		t.Errorf("%s should be able to set password of %s but was not able to!", issuer, credentials)
+	}
+
+	if !username && oldMember.Username != newMember.Username {
+		t.Errorf("%s should not be able to set username of %s but was able to!", issuer, credentials)
+	}
+
+	if !password && oldMember.Password != newMember.Password {
+		t.Errorf("%s should not be able to set password of %s but was able to!", issuer, credentials)
+	}
+}
