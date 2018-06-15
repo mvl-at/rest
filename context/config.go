@@ -9,12 +9,14 @@ import (
 	"time"
 )
 
+//Path for the config file.
 const ConfigPath = "conf.json"
 
 var Log = log.New(os.Stdout, "", log.Ldate|log.Ltime)
 var ErrLog = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Llongfile)
 var Conf = config()
 
+//Reads the config from file and assigns it to the context.Conf
 func config() (conf *Configuration) {
 	conf = &Configuration{}
 	fil, err := os.OpenFile(ConfigPath, 0, 0644)
@@ -46,6 +48,7 @@ func config() (conf *Configuration) {
 	return
 }
 
+//Struct which holds the configuration.
 type Configuration struct {
 	Host          string `json:"host"`
 	Port          uint16 `json:"port"`

@@ -8,6 +8,7 @@ import (
 	"rest/model"
 )
 
+//Generic error for all database related actions.
 type DBError struct {
 	message string
 }
@@ -16,6 +17,7 @@ func (d DBError) Error() string {
 	return d.message
 }
 
+//Shortcut for error logging.
 func log(err error) {
 
 	if err != nil {
@@ -23,6 +25,7 @@ func log(err error) {
 	}
 }
 
+//Creates tables for all registered structs, if not exist.
 func TableCreate(a interface{}) {
 	m, _ := qbs.GetMigration()
 
@@ -30,6 +33,7 @@ func TableCreate(a interface{}) {
 	log(err)
 }
 
+//Deletes a single struct.
 func Delete(a interface{}) {
 	db, err := qbs.GetQbs()
 	defer db.Close()
@@ -58,6 +62,7 @@ func Delete(a interface{}) {
 	}
 }
 
+//Persists a single struct.
 func Save(a interface{}) {
 	db, err := qbs.GetQbs()
 	defer db.Close()
@@ -74,6 +79,7 @@ func Save(a interface{}) {
 	}
 }
 
+//Finds a slice of structs.
 func FindAll(a interface{}) {
 	db, err := qbs.GetQbs()
 	defer db.Close()
@@ -90,6 +96,7 @@ func FindAll(a interface{}) {
 	}
 }
 
+//Finds a slice of structs with given condition.
 func FindAllWhereEqual(a interface{}, field string, value interface{}) {
 	db, err := qbs.GetQbs()
 	defer db.Close()
@@ -106,6 +113,8 @@ func FindAllWhereEqual(a interface{}, field string, value interface{}) {
 	}
 }
 
+//Finds a single struct with an Id.
+//Returns false if no struct exists with the given Id.
 func Find(a interface{}) (exists bool) {
 	exists = false
 	db, err := qbs.GetQbs()

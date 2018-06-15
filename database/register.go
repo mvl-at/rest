@@ -7,6 +7,7 @@ import (
 	"rest/model"
 )
 
+//Registers all model structs from this project to the database.
 func Register() {
 	TableCreate(&model.Event{})
 	TableCreate(&model.Instrument{})
@@ -17,6 +18,8 @@ func Register() {
 	TableCreate(&model.RoleMember{})
 }
 
+//Checks if root user and role exists.
+//If not, it creates both, the password will be printed on configured log tool.
 func CheckRoot() {
 	memberRoles := make([]*model.RoleMember, 0)
 	FindAllWhereEqual(&memberRoles, "role_id", "root")

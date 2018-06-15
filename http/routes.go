@@ -12,6 +12,7 @@ import (
 	"strings"
 )
 
+//Registers all routes to the http service.
 func Routes() {
 	http.HandleFunc("/events", rest(events))
 	http.HandleFunc("/members", rest(members))
@@ -24,6 +25,7 @@ func Routes() {
 	http.HandleFunc("/credentials", rest(credentials))
 }
 
+//Modifies the http header for use with REST.
 func rest(next http.HandlerFunc) http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		writer.Header().Set("Access-Control-Allow-Origin", "*")
@@ -32,6 +34,8 @@ func rest(next http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
+//Generic handler for http GET.
+//Returns false if the request was not the GET method.
 func httpGet(rw http.ResponseWriter, r *http.Request, a interface{}) bool {
 
 	if r.Method == http.MethodGet {
@@ -47,6 +51,8 @@ func httpGet(rw http.ResponseWriter, r *http.Request, a interface{}) bool {
 	return false
 }
 
+//Generic handler for http POST and PUT.
+//Returns false if the requested was neither the POST or PUT method.
 func httpPostPut(rw http.ResponseWriter, r *http.Request, a interface{}) (called bool) {
 
 	called = r.Method == http.MethodPost || r.Method == http.MethodPut
@@ -87,6 +93,8 @@ func httpPostPut(rw http.ResponseWriter, r *http.Request, a interface{}) (called
 	return
 }
 
+//Generic http DELETE method.
+//Returns false, if the request was not http DELETE.
 func httpDelete(rw http.ResponseWriter, r *http.Request, a interface{}) (called bool) {
 
 	called = r.Method == http.MethodDelete
@@ -121,6 +129,8 @@ func httpDelete(rw http.ResponseWriter, r *http.Request, a interface{}) (called 
 	return
 }
 
+//Checks, if the given member-role association contains at least one of the defined roles.
+//Returns true, if either the association has at least one of the defined roles, or if it has the root role.
 func hasRole(memberRoles []*model.RoleMember, definedRoles string) bool {
 
 	for _, definedRole := range strings.Split(definedRoles, ",") {
@@ -133,6 +143,7 @@ func hasRole(memberRoles []*model.RoleMember, definedRoles string) bool {
 	return false
 }
 
+//Handler for events.
 func events(rw http.ResponseWriter, r *http.Request) {
 
 	if !httpGet(rw, r, &model.Event{}) && !httpPostPut(rw, r, &model.Event{}) && !httpDelete(rw, r, &model.Event{}) {
@@ -140,6 +151,7 @@ func events(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//Handler for instruments.
 func instruments(rw http.ResponseWriter, r *http.Request) {
 
 	if !httpGet(rw, r, &model.Instrument{}) && !httpPostPut(rw, r, &model.Instrument{}) && !httpDelete(rw, r, &model.Instrument{}) {
@@ -147,6 +159,7 @@ func instruments(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//Handler for members.
 func members(rw http.ResponseWriter, r *http.Request) {
 
 	if !httpGet(rw, r, &model.Member{}) && !httpPostPut(rw, r, &model.Member{Deleted: false, Active: true, LoginAllowed: false}) && !httpDelete(rw, r, &model.Member{}) {
@@ -154,6 +167,7 @@ func members(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//Handler for roles.
 func roles(rw http.ResponseWriter, r *http.Request) {
 
 	if !httpGet(rw, r, &model.Role{}) && !httpPostPut(rw, r, &model.Role{}) && !httpDelete(rw, r, &model.Role{}) {
@@ -161,6 +175,7 @@ func roles(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//Handler for leader roles.
 func leaderRoles(rw http.ResponseWriter, r *http.Request) {
 
 	if !httpGet(rw, r, &model.LeaderRole{}) && !httpPostPut(rw, r, &model.LeaderRole{}) && !httpDelete(rw, r, &model.LeaderRole{}) {
@@ -168,6 +183,7 @@ func leaderRoles(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//Handler for leader roles members.
 func leaderRolesMembers(rw http.ResponseWriter, r *http.Request) {
 
 	if !httpGet(rw, r, &model.LeaderRoleMember{}) && !httpPostPut(rw, r, &model.LeaderRoleMember{}) && !httpDelete(rw, r, &model.LeaderRoleMember{}) {
@@ -175,6 +191,7 @@ func leaderRolesMembers(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//Handler for roles members.
 func rolesMembers(rw http.ResponseWriter, r *http.Request) {
 
 	if !httpGet(rw, r, &model.RoleMember{}) && !httpPostPut(rw, r, &model.RoleMember{}) && !httpDelete(rw, r, &model.RoleMember{}) {
@@ -182,6 +199,7 @@ func rolesMembers(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//Handler for login.
 func login(rw http.ResponseWriter, r *http.Request) {
 	jwtData := security.JWTData{}
 	err := json.NewDecoder(r.Body).Decode(&jwtData)
@@ -199,6 +217,7 @@ func login(rw http.ResponseWriter, r *http.Request) {
 	rw.WriteHeader(http.StatusForbidden)
 }
 
+//Handler for updating user credentials.
 func credentials(rw http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost && r.Method != http.MethodPut {
 		rw.WriteHeader(http.StatusNotFound)

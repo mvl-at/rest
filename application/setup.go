@@ -10,6 +10,8 @@ import (
 	"time"
 )
 
+//Does the setup for the application. That includes: initialize random, set logging tools,
+//register and setup database, create root user when not existent, register http routes and run http
 func Setup() {
 	rand.Seed(time.Now().UnixNano())
 	qbs.SetLogger(context.Log, context.ErrLog)
