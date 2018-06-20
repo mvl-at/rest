@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"rest/context"
 	"rest/model"
+	"time"
 )
 
 //Generic error for all database related actions.
@@ -137,4 +138,33 @@ func Find(a interface{}) (exists bool) {
 		exists = true
 	}
 	return
+}
+
+//Finds all events in the given time range
+//'from' and 'to' do only check the date but not the time
+//events which's date are equal 'from' or 'to' will be included
+func FindEventsRange(events *[]*model.Event, from time.Time, to time.Time) {
+	db, err := qbs.GetQbs()
+	defer db.Close()
+	db.Log = true
+
+	if err != nil {
+		log(err)
+		return
+	}
+
+	err = db.FindAll(events)
+
+	if err != nil {
+		log(err)
+		return
+	}
+
+	tmp := make([]*model.Event, 0)
+	for _, event := range *events {
+		if !(from.After(event.Date) || to.Before(event.Date)) {
+			tmp = append(tmp, event)
+		}
+	}
+	*events = tmp
 }
