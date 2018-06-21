@@ -10,6 +10,7 @@ import (
 	"rest/model"
 	"rest/security"
 	"strings"
+	"time"
 )
 
 //Registers all routes to the http service.
@@ -23,6 +24,7 @@ func Routes() {
 	http.HandleFunc("/leaderRolesMembers", rest(leaderRolesMembers))
 	http.HandleFunc("/login", rest(login))
 	http.HandleFunc("/credentials", rest(credentials))
+	http.HandleFunc("/eventsrange", rest(eventsRange))
 }
 
 //Modifies the http header for use with REST.
@@ -241,5 +243,33 @@ func credentials(rw http.ResponseWriter, r *http.Request) {
 		} else {
 			rw.WriteHeader(http.StatusForbidden)
 		}
+	}
+}
+
+//Handler for events in a certain range
+func eventsRange(rw http.ResponseWriter, r *http.Request) {
+	fromString := r.URL.Query().Get("from")
+	toString := r.URL.Query().Get("to")
+	if fromString == "" {
+		fromString = "00000101"
+	}
+	if toString == "" {
+		toString = "99991231"
+	}
+	from, err := time.Parse("20060102", fromString)
+	if err != nil {
+		rw.WriteHeader(http.StatusUnprocessableEntity)
+		return
+	}
+	to, err := time.Parse("20060102", toString)
+	if err != nil {
+		rw.WriteHeader(http.StatusUnprocessableEntity)
+		return
+	}
+	events := make([]*model.Event, 0)
+	database.FindEventsRange(&events, from, to)
+	err = json.NewEncoder(rw).Encode(&events)
+	if err != nil {
+		rw.WriteHeader(http.StatusInternalServerError)
 	}
 }
