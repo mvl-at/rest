@@ -2,10 +2,10 @@ package database
 
 import (
 	"database/sql"
+	"github.com/mvl-at/model"
 	"github.com/mvl-at/qbs"
 	"reflect"
 	"rest/context"
-	"rest/model"
 	"time"
 )
 

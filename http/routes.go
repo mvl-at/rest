@@ -2,12 +2,12 @@ package http
 
 import (
 	"encoding/json"
+	"github.com/mvl-at/model"
 	"io/ioutil"
 	"net/http"
 	"reflect"
 	"rest/context"
 	"rest/database"
-	"rest/model"
 	"rest/security"
 	"strings"
 	"time"

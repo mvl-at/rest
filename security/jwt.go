@@ -6,9 +6,9 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	"github.com/mvl-at/model"
 	"rest/context"
 	"rest/database"
-	"rest/model"
 	"strings"
 	"time"
 )
