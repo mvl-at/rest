@@ -1,7 +1,7 @@
 package main
 
 import (
-	"rest/application"
+	"github.com/mvl-at/rest/application"
 )
 
 //Main binary for the rest service. Designed for use in production.

@@ -3,10 +3,10 @@ package application
 import (
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/mvl-at/qbs"
+	"github.com/mvl-at/rest/context"
+	"github.com/mvl-at/rest/database"
+	"github.com/mvl-at/rest/http"
 	"math/rand"
-	"rest/context"
-	"rest/database"
-	"rest/http"
 	"time"
 )
 

@@ -2,8 +2,8 @@ package security
 
 import (
 	"github.com/mvl-at/model"
+	"github.com/mvl-at/rest/database"
 	"golang.org/x/crypto/bcrypt"
-	"rest/database"
 )
 
 //Defines the credentials with plain password.

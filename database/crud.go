@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"github.com/mvl-at/model"
 	"github.com/mvl-at/qbs"
+	"github.com/mvl-at/rest/context"
 	"reflect"
-	"rest/context"
 	"time"
 )
 

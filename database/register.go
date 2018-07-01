@@ -3,8 +3,8 @@ package database
 import (
 	"fmt"
 	"github.com/mvl-at/model"
+	"github.com/mvl-at/rest/context"
 	"math/rand"
-	"rest/context"
 )
 
 //Registers all model structs from this project to the database.

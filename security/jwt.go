@@ -7,8 +7,8 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"github.com/mvl-at/model"
-	"rest/context"
-	"rest/database"
+	"github.com/mvl-at/rest/context"
+	"github.com/mvl-at/rest/database"
 	"strings"
 	"time"
 )

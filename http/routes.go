@@ -3,12 +3,12 @@ package http
 import (
 	"encoding/json"
 	"github.com/mvl-at/model"
+	"github.com/mvl-at/rest/context"
+	"github.com/mvl-at/rest/database"
+	"github.com/mvl-at/rest/security"
 	"io/ioutil"
 	"net/http"
 	"reflect"
-	"rest/context"
-	"rest/database"
-	"rest/security"
 	"strings"
 	"time"
 )

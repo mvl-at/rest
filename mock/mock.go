@@ -2,8 +2,8 @@ package mock
 
 import (
 	"github.com/mvl-at/model"
-	"rest/database"
-	"rest/security"
+	"github.com/mvl-at/rest/database"
+	"github.com/mvl-at/rest/security"
 	"time"
 )
 

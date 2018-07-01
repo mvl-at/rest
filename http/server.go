@@ -2,9 +2,9 @@ package http
 
 import (
 	"fmt"
+	"github.com/mvl-at/rest/context"
 	"log"
 	"net/http"
-	"rest/context"
 )
 
 //Serves the http application and logs it.

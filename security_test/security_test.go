@@ -3,9 +3,9 @@ package security_test
 import (
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/mvl-at/model"
-	"rest/database"
-	. "rest/mock"
-	"rest/security"
+	"github.com/mvl-at/rest/database"
+	. "github.com/mvl-at/rest/mock"
+	"github.com/mvl-at/rest/security"
 	"testing"
 	"time"
 )

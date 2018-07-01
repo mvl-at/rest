@@ -3,11 +3,11 @@ package mock_test
 import (
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/mvl-at/qbs"
+	"github.com/mvl-at/rest/context"
+	"github.com/mvl-at/rest/database"
+	"github.com/mvl-at/rest/http"
+	"github.com/mvl-at/rest/mock"
 	"os"
-	"rest/context"
-	"rest/database"
-	"rest/http"
-	"rest/mock"
 	"testing"
 )
 
