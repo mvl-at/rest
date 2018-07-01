@@ -179,7 +179,7 @@ func updateCredentials(credentials *security.Credentials, username bool, passwor
 	_, status := request("/credentials", vhttp.MethodPost, credentials, issuer)
 	if status == vhttp.StatusForbidden {
 		if username && password {
-			t.Errorf("%s should be able to set credentials %s but was not able to!", issuer, credentials)
+			t.Errorf("%+v should be able to set credentials %+v but was not able to!", issuer, credentials)
 		}
 		return
 	}
@@ -187,18 +187,18 @@ func updateCredentials(credentials *security.Credentials, username bool, passwor
 	database.Find(newMember)
 
 	if username && oldMember.Username == newMember.Username {
-		t.Errorf("%s should be able to set username of %s but was not able to!", issuer, credentials)
+		t.Errorf("%+v should be able to set username of %+v but was not able to!", issuer, credentials)
 	}
 
 	if password && oldMember.Password == newMember.Password {
-		t.Errorf("%s should be able to set password of %s but was not able to!", issuer, credentials)
+		t.Errorf("%+v should be able to set password of %+v but was not able to!", issuer, credentials)
 	}
 
 	if !username && oldMember.Username != newMember.Username {
-		t.Errorf("%s should not be able to set username of %s but was able to!", issuer, credentials)
+		t.Errorf("%+v should not be able to set username of %+v but was able to!", issuer, credentials)
 	}
 
 	if !password && oldMember.Password != newMember.Password {
-		t.Errorf("%s should not be able to set password of %s but was able to!", issuer, credentials)
+		t.Errorf("%+v should not be able to set password of %+v but was able to!", issuer, credentials)
 	}
 }
