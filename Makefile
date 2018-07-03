@@ -4,10 +4,12 @@ GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
 GORUN=$(GOCMD) run
+GOFMT=gofmt
 BUILDDIR?=build
 BINARYNAME?=mvl-serve
 BINARY=$(BUILDDIR)/$(BINARYNAME)
 MAINPACKAGE=./cmd/serve
+SRC=$(shell find . -type f -name '*.go')
     
 all: test build
 prod:
@@ -25,3 +27,5 @@ run:
 	$(GORUN) $(MAINPACKAGE)/serve.go
 deps:
 	$(GOGET) ./...
+fmt:
+	$(GOFMT) -s -l -w $(SRC)
