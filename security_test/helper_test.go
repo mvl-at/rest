@@ -109,11 +109,10 @@ func exists(equality interface{}) bool {
 func token(member *model.Member) string {
 	data := &security.JWTData{Username: member.Username, Password: member.Password}
 	jsonData, _ := json.Marshal(data)
-	req, _ := vhttp.NewRequest(vhttp.MethodGet, fmt.Sprintf("http://%s:%d/login", context.Conf.Host, context.Conf.Port), bytes.NewBuffer(jsonData))
+	req, _ := vhttp.NewRequest(vhttp.MethodPost, fmt.Sprintf("http://%s:%d/login", context.Conf.Host, context.Conf.Port), bytes.NewBuffer(jsonData))
 	c := &vhttp.Client{}
 	resp, _ := c.Do(req)
-	body, _ := ioutil.ReadAll(resp.Body)
-	return string(body)
+	return resp.Header.Get("Access-token")
 }
 
 func request(url string, method string, data interface{}, issuer *model.Member) (response string, status int) {
@@ -124,7 +123,7 @@ func request(url string, method string, data interface{}, issuer *model.Member) 
 	req, _ := vhttp.NewRequest(method, fmt.Sprintf("http://%s:%d%s", context.Conf.Host, context.Conf.Port, url), bytes.NewBuffer(jsonData))
 
 	if issuer != nil {
-		req.Header.Set("token", token(issuer))
+		req.Header.Set("Access-token", token(issuer))
 	}
 
 	c := &vhttp.Client{}

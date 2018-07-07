@@ -60,7 +60,7 @@ func httpPostPut(rw http.ResponseWriter, r *http.Request, a interface{}) (called
 	called = r.Method == http.MethodPost || r.Method == http.MethodPut
 	if called {
 
-		token := r.Header.Get("token")
+		token := r.Header.Get("Access-token")
 		valid, member := security.Check(token)
 
 		if !valid || member == nil {
@@ -203,6 +203,10 @@ func rolesMembers(rw http.ResponseWriter, r *http.Request) {
 
 //Handler for login.
 func login(rw http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		rw.WriteHeader(http.StatusNotFound)
+		return
+	}
 	jwtData := security.JWTData{}
 	err := json.NewDecoder(r.Body).Decode(&jwtData)
 
@@ -212,7 +216,7 @@ func login(rw http.ResponseWriter, r *http.Request) {
 		success, token := security.Login(&jwtData)
 
 		if success {
-			rw.Write([]byte(token))
+			rw.Header().Set("Access-token", token)
 			return
 		}
 	}
@@ -224,7 +228,7 @@ func credentials(rw http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost && r.Method != http.MethodPut {
 		rw.WriteHeader(http.StatusNotFound)
 	}
-	token := r.Header.Get("token")
+	token := r.Header.Get("Access-token")
 	valid, member := security.Check(token)
 	if !valid || member == nil {
 		rw.WriteHeader(http.StatusForbidden)
