@@ -25,6 +25,7 @@ func Routes() {
 	http.HandleFunc("/login", rest(login))
 	http.HandleFunc("/credentials", rest(credentials))
 	http.HandleFunc("/eventsrange", rest(eventsRange))
+	http.HandleFunc("/userinfo", rest(userInfo))
 }
 
 //Modifies the http header for use with REST.
@@ -32,6 +33,12 @@ func rest(next http.HandlerFunc) http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		writer.Header().Set("Access-Control-Allow-Origin", "*")
 		writer.Header().Set("content-type", "application/json")
+		writer.Header().Set("Access-Control-Expose-Headers", "Access-token")
+		if request.Method == http.MethodOptions {
+			writer.Header().Set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS")
+			writer.Header().Set("Access-Control-Allow-Headers", "access-token")
+			return
+		}
 		next.ServeHTTP(writer, request)
 	}
 }
@@ -276,4 +283,21 @@ func eventsRange(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
 	}
+}
+
+//returns information about a user using it's jwt
+func userInfo(rw http.ResponseWriter, r *http.Request) {
+	jwt := r.Header.Get("Access-token")
+	valid, member := security.Check(jwt)
+	if !valid {
+		rw.WriteHeader(http.StatusForbidden)
+		return
+	}
+	userInfo := &security.UserInfo{Member: member, Roles: make([]*model.Role, 0)}
+	rolesMembers := make([]*model.RoleMember, 0)
+	database.FindAllWhereEqual(&rolesMembers, "member_id", member.Id)
+	for _, role := range rolesMembers {
+		userInfo.Roles = append(userInfo.Roles, role.Role)
+	}
+	json.NewEncoder(rw).Encode(&userInfo)
 }

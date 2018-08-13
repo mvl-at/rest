@@ -31,6 +31,11 @@ type JWTPayload struct {
 	Expiration time.Time `json:"exp"`
 }
 
+type UserInfo struct {
+	Member *model.Member `json:"member"`
+	Roles  []*model.Role `json:"roles"`
+}
+
 //Does the login process.
 //Returns true, if the login was successful.
 //Returns the JWT for future request which require certain roles or permissions.
