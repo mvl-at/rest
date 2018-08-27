@@ -36,7 +36,7 @@ func rest(next http.HandlerFunc) http.HandlerFunc {
 		writer.Header().Set("Access-Control-Expose-Headers", "Access-token")
 		if request.Method == http.MethodOptions {
 			writer.Header().Set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS")
-			writer.Header().Set("Access-Control-Allow-Headers", "access-token")
+			writer.Header().Set("Access-Control-Allow-Headers", "access-token,content-type")
 			return
 		}
 		next.ServeHTTP(writer, request)
