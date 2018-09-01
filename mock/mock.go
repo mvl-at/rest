@@ -88,7 +88,8 @@ var Josef = &model.Member{
 	Deleted:      false,
 	LoginAllowed: true,
 	Instrument:   Tenorhorn,
-	Password:     "dfg"}
+	Username:     "josef",
+	Password:     "111"}
 
 var Obmann = &model.LeaderRole{Name: "Obmann", NamePlural: "Obmänner"}
 var Archivar = &model.LeaderRole{Name: "Archivar", NamePlural: "Archivare"}
