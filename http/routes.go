@@ -109,7 +109,7 @@ func httpDelete(rw http.ResponseWriter, r *http.Request, a interface{}) (called 
 	called = r.Method == http.MethodDelete
 	if called {
 
-		token := r.Header.Get("token")
+		token := r.Header.Get("access-token")
 		valid, member := security.Check(token)
 
 		if !valid || member == nil {
