@@ -30,7 +30,7 @@ func config() (conf *Configuration) {
 		rand.Read(jwtSecret)
 		conf = &Configuration{
 			Host:          "0.0.0.0",
-			Port:          8080,
+			Port:          7301,
 			SQLiteFile:    "mvl.sqlite",
 			JwtSecret:     fmt.Sprintf("%x", jwtSecret),
 			JwtExpiration: 30}
