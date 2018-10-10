@@ -3,7 +3,6 @@ package mock
 import (
 	"github.com/mvl-at/model"
 	"github.com/mvl-at/rest/database"
-	"github.com/mvl-at/rest/security"
 	"time"
 )
 
@@ -130,7 +129,7 @@ func MockData() {
 	for _, v := range members {
 		database.Save(v)
 		persistenceMember := *v
-		persistenceMember.Password = security.PasswordHash(v.Password)
+		persistenceMember.Password = database.PasswordHash(v.Password)
 		database.Save(&persistenceMember)
 	}
 

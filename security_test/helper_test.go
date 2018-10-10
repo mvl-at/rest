@@ -10,7 +10,6 @@ import (
 	"github.com/mvl-at/rest/database"
 	"github.com/mvl-at/rest/http"
 	"github.com/mvl-at/rest/mock"
-	"github.com/mvl-at/rest/security"
 	"io/ioutil"
 	"math/rand"
 	vhttp "net/http"
@@ -107,7 +106,7 @@ func exists(equality interface{}) bool {
 }
 
 func token(member *model.Member) string {
-	data := &security.JWTData{Username: member.Username, Password: member.Password}
+	data := &database.JWTData{Username: member.Username, Password: member.Password}
 	jsonData, _ := json.Marshal(data)
 	req, _ := vhttp.NewRequest(vhttp.MethodPost, fmt.Sprintf("http://%s:%d/login", context.Conf.Host, context.Conf.Port), bytes.NewBuffer(jsonData))
 	c := &vhttp.Client{}
@@ -172,7 +171,7 @@ func timeEqual(t1 time.Time, t2 time.Time) bool {
 	return t1.Minute() == t2.Minute() && t1.Hour() == t2.Hour() && t1.Day() == t2.Day() && t1.Month() == t2.Month() && t1.Year() == t2.Year() && t1.Second() == t2.Second()
 }
 
-func updateCredentials(credentials *security.Credentials, username bool, password bool, issuer *model.Member, t *testing.T) {
+func updateCredentials(credentials *database.Credentials, username bool, password bool, issuer *model.Member, t *testing.T) {
 	oldMember := &model.Member{Id: credentials.MemberId}
 	database.Find(oldMember)
 	_, status := request("/credentials", vhttp.MethodPost, credentials, issuer)

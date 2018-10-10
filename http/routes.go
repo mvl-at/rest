@@ -5,7 +5,6 @@ import (
 	"github.com/mvl-at/model"
 	"github.com/mvl-at/rest/context"
 	"github.com/mvl-at/rest/database"
-	"github.com/mvl-at/rest/security"
 	"io/ioutil"
 	"net/http"
 	"reflect"
@@ -68,7 +67,7 @@ func httpPostPut(rw http.ResponseWriter, r *http.Request, a interface{}) (called
 	if called {
 
 		token := r.Header.Get("Access-token")
-		valid, member := security.Check(token)
+		valid, member := database.Check(token)
 
 		if !valid || member == nil {
 			rw.WriteHeader(http.StatusForbidden)
@@ -110,7 +109,7 @@ func httpDelete(rw http.ResponseWriter, r *http.Request, a interface{}) (called 
 	if called {
 
 		token := r.Header.Get("access-token")
-		valid, member := security.Check(token)
+		valid, member := database.Check(token)
 
 		if !valid || member == nil {
 			rw.WriteHeader(http.StatusForbidden)
@@ -214,13 +213,13 @@ func login(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(http.StatusNotFound)
 		return
 	}
-	jwtData := security.JWTData{}
+	jwtData := database.JWTData{}
 	err := json.NewDecoder(r.Body).Decode(&jwtData)
 
 	if err != nil {
 		context.Log.Println(err.Error())
 	} else {
-		success, token := security.Login(&jwtData)
+		success, token := database.Login(&jwtData)
 
 		if success {
 			rw.Header().Set("Access-token", token)
@@ -236,21 +235,21 @@ func credentials(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(http.StatusNotFound)
 	}
 	token := r.Header.Get("Access-token")
-	valid, member := security.Check(token)
+	valid, member := database.Check(token)
 	if !valid || member == nil {
 		rw.WriteHeader(http.StatusForbidden)
 		return
 	}
-	credentials := &security.Credentials{}
+	credentials := &database.Credentials{}
 	json.NewDecoder(r.Body).Decode(credentials)
 	roles := make([]*model.RoleMember, 0)
 	database.FindAllWhereEqual(&roles, "member_id", member.Id)
 	if hasRole(roles, "credentials") {
-		security.UpdateCredentials(credentials)
+		database.UpdateCredentials(credentials)
 	} else {
 		if member.Id == credentials.MemberId {
 			credentials.Username = member.Username
-			security.UpdateCredentials(credentials)
+			database.UpdateCredentials(credentials)
 		} else {
 			rw.WriteHeader(http.StatusForbidden)
 		}
@@ -288,12 +287,12 @@ func eventsRange(rw http.ResponseWriter, r *http.Request) {
 //returns information about a user using it's jwt
 func userInfo(rw http.ResponseWriter, r *http.Request) {
 	jwt := r.Header.Get("Access-token")
-	valid, member := security.Check(jwt)
+	valid, member := database.Check(jwt)
 	if !valid {
 		rw.WriteHeader(http.StatusForbidden)
 		return
 	}
-	userInfo := &security.UserInfo{Member: member, Roles: make([]*model.Role, 0)}
+	userInfo := &database.UserInfo{Member: member, Roles: make([]*model.Role, 0)}
 	rolesMembers := make([]*model.RoleMember, 0)
 	database.FindAllWhereEqual(&rolesMembers, "member_id", member.Id)
 	for _, role := range rolesMembers {

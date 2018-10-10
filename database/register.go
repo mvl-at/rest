@@ -37,7 +37,7 @@ func CheckRoot() {
 		} else {
 			rootRole = roles[0]
 		}
-		root := &model.Member{Username: "root", LoginAllowed: true, Deleted: false, Password: fmt.Sprintf("%x", password)}
+		root := &model.Member{Username: "root", LoginAllowed: true, Deleted: false, Password: PasswordHash(fmt.Sprintf("%x", password))}
 		rootRootRole := &model.RoleMember{Member: root, Role: rootRole}
 		Save(root)
 		Save(rootRootRole)

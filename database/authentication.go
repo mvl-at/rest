@@ -1,8 +1,7 @@
-package security
+package database
 
 import (
 	"github.com/mvl-at/model"
-	"github.com/mvl-at/rest/database"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -25,13 +24,13 @@ func passwordCorrect(plainPassword string, hashedPassword string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(plainPassword)) == nil
 }
 
-//Persists the given credentials to the equivalent member into the database.
+//Persists the given credentials to the equivalent member into the 
 func UpdateCredentials(credentials *Credentials) {
 	member := &model.Member{Id: credentials.MemberId}
-	database.Find(member)
+	Find(member)
 	if member != nil {
 		member.Username = credentials.Username
 		member.Password = PasswordHash(credentials.Password)
-		database.Save(member)
+		Save(member)
 	}
 }

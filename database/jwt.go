@@ -1,4 +1,4 @@
-package security
+package database
 
 import (
 	"crypto/hmac"
@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"github.com/mvl-at/model"
 	"github.com/mvl-at/rest/context"
-	"github.com/mvl-at/rest/database"
 	"strings"
 	"time"
 )
@@ -54,7 +53,7 @@ func Login(data *JWTData) (bool, string) {
 //Return nil if nothing was found.
 func findMember(username string, password string) *model.Member {
 	members := make([]*model.Member, 0)
-	database.FindAll(&members)
+	FindAll(&members)
 	for _, v := range members {
 		if v.Username == username && passwordCorrect(password, v.Password) && v.LoginAllowed && !v.Deleted {
 			return v
@@ -86,7 +85,7 @@ func hash(rawToken string) string {
 //Shortcut to find a member.
 func fetchMember(id int64) *model.Member {
 	member := &model.Member{Id: id}
-	database.Find(member)
+	Find(member)
 	return member
 }
 

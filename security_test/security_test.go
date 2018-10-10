@@ -5,7 +5,6 @@ import (
 	"github.com/mvl-at/model"
 	"github.com/mvl-at/rest/database"
 	. "github.com/mvl-at/rest/mock"
-	"github.com/mvl-at/rest/security"
 	"testing"
 	"time"
 )
@@ -70,26 +69,26 @@ func TestKeepLastRoot(t *testing.T) {
 }
 
 func TestKarlUpdateOwnPassword(t *testing.T) {
-	credentials := &security.Credentials{MemberId: Karl.Id, Password: Karl.Password + "67", Username: Karl.Username + "df"}
+	credentials := &database.Credentials{MemberId: Karl.Id, Password: Karl.Password + "67", Username: Karl.Username + "df"}
 	updateCredentials(credentials, false, true, Karl, t)
 }
 
 func TestKarlUpdateHelmutCredentials(t *testing.T) {
-	credentials := &security.Credentials{MemberId: Helmut.Id, Password: Helmut.Password + "67", Username: Karl.Username + "df"}
+	credentials := &database.Credentials{MemberId: Helmut.Id, Password: Helmut.Password + "67", Username: Karl.Username + "df"}
 	updateCredentials(credentials, false, false, Karl, t)
 }
 
 func TestJosefUpdateHelmutCredentials(t *testing.T) {
-	credentials := &security.Credentials{MemberId: Helmut.Id, Password: Helmut.Password + "67", Username: Helmut.Username + "df"}
+	credentials := &database.Credentials{MemberId: Helmut.Id, Password: Helmut.Password + "67", Username: Helmut.Username + "df"}
 	updateCredentials(credentials, true, true, Josef, t)
 }
 
 func TestFranzUpdateKarlCredentials(t *testing.T) {
-	credentials := &security.Credentials{MemberId: Karl.Id, Password: Karl.Password + "67", Username: Karl.Username + "df"}
+	credentials := &database.Credentials{MemberId: Karl.Id, Password: Karl.Password + "67", Username: Karl.Username + "df"}
 	updateCredentials(credentials, false, false, Franz, t)
 }
 
 func TestFranzUpdatePaulCredentials(t *testing.T) {
-	credentials := &security.Credentials{MemberId: Paul.Id, Password: Paul.Password + "67", Username: Paul.Username}
+	credentials := &database.Credentials{MemberId: Paul.Id, Password: Paul.Password + "67", Username: Paul.Username}
 	updateCredentials(credentials, false, true, Franz, t)
 }
