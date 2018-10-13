@@ -46,7 +46,6 @@ var Paul = &model.Member{
 	LastName:     "Blatt",
 	Joined:       1993,
 	Active:       true,
-	Deleted:      false,
 	LoginAllowed: true,
 	Instrument:   Fluegelhorn,
 	Username:     "willi",
@@ -57,7 +56,6 @@ var Helmut = &model.Member{
 	LastName:     "Gras",
 	Joined:       1975,
 	Active:       true,
-	Deleted:      false,
 	LoginAllowed: true,
 	Instrument:   Tenorhorn,
 	Password:     "dfldfg"}
@@ -66,7 +64,6 @@ var Karl = &model.Member{
 	LastName:     "Baum",
 	Joined:       2014,
 	Active:       true,
-	Deleted:      false,
 	LoginAllowed: true,
 	Instrument:   Fluegelhorn,
 	Password:     "dfghhj"}
@@ -75,7 +72,6 @@ var Franz = &model.Member{
 	LastName:     "Moos",
 	Joined:       2011,
 	Active:       false,
-	Deleted:      true,
 	LoginAllowed: false,
 	Instrument:   Horn,
 	Password:     "giogftr"}
@@ -84,7 +80,6 @@ var Josef = &model.Member{
 	LastName:     "Strauch",
 	Joined:       2009,
 	Active:       true,
-	Deleted:      false,
 	LoginAllowed: true,
 	Instrument:   Tenorhorn,
 	Username:     "josef",

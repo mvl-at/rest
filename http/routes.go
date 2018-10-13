@@ -170,7 +170,7 @@ func instruments(rw http.ResponseWriter, r *http.Request) {
 //Handler for members.
 func members(rw http.ResponseWriter, r *http.Request) {
 
-	if !httpGet(rw, r, &model.Member{}) && !httpPostPut(rw, r, &model.Member{Deleted: false, Active: true, LoginAllowed: false}) && !httpDelete(rw, r, &model.Member{}) {
+	if !httpGet(rw, r, &model.Member{}) && !httpPostPut(rw, r, &model.Member{ Active: true, LoginAllowed: false}) && !httpDelete(rw, r, &model.Member{}) {
 		rw.WriteHeader(http.StatusNotFound)
 	}
 }

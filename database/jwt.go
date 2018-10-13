@@ -55,7 +55,7 @@ func findMember(username string, password string) *model.Member {
 	members := make([]*model.Member, 0)
 	FindAll(&members)
 	for _, v := range members {
-		if v.Username == username && passwordCorrect(password, v.Password) && v.LoginAllowed && !v.Deleted {
+		if v.Username == username && passwordCorrect(password, v.Password) && v.LoginAllowed {
 			return v
 		}
 	}
@@ -110,7 +110,7 @@ func Check(token string) (valid bool, member *model.Member) {
 
 	member = fetchMember(payload.MemberId)
 
-	if member.Deleted || !member.LoginAllowed {
+	if !member.LoginAllowed {
 		return
 	}
 
