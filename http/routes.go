@@ -7,7 +7,9 @@ import (
 	"github.com/mvl-at/rest/database"
 	"io/ioutil"
 	"net/http"
+	"path"
 	"reflect"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -25,6 +27,7 @@ func Routes() {
 	http.HandleFunc("/credentials", rest(credentials))
 	http.HandleFunc("/eventsrange", rest(eventsRange))
 	http.HandleFunc("/userinfo", rest(userInfo))
+	http.HandleFunc("/declinations/", rest(declinations))
 }
 
 //Modifies the http header for use with REST.
@@ -170,7 +173,7 @@ func instruments(rw http.ResponseWriter, r *http.Request) {
 //Handler for members.
 func members(rw http.ResponseWriter, r *http.Request) {
 
-	if !httpGet(rw, r, &model.Member{}) && !httpPostPut(rw, r, &model.Member{ Active: true, LoginAllowed: false}) && !httpDelete(rw, r, &model.Member{}) {
+	if !httpGet(rw, r, &model.Member{}) && !httpPostPut(rw, r, &model.Member{Active: true, LoginAllowed: false}) && !httpDelete(rw, r, &model.Member{}) {
 		rw.WriteHeader(http.StatusNotFound)
 	}
 }
@@ -205,6 +208,49 @@ func rolesMembers(rw http.ResponseWriter, r *http.Request) {
 	if !httpGet(rw, r, &model.RoleMember{}) && !httpPostPut(rw, r, &model.RoleMember{}) && !httpDelete(rw, r, &model.RoleMember{}) {
 		rw.WriteHeader(http.StatusNotFound)
 	}
+}
+
+//Handler for declinations.
+func declinations(rw http.ResponseWriter, r *http.Request) {
+	token := r.Header.Get("access-token")
+	valid, member := database.Check(token)
+	if !valid || member == nil {
+		rw.WriteHeader(http.StatusForbidden)
+		return
+	}
+	urlSegments := strings.Split(r.URL.Path, "/")
+	viewType := urlSegments[len(urlSegments)-2]
+	id, _ := strconv.ParseInt(path.Base(r.URL.Path), 10, 64)
+	if r.Method == http.MethodGet {
+		roles := make([]*model.RoleMember, 0)
+		database.FindAllWhereEqual(&roles, "member_id", member.Id)
+		declines := make([]*model.Declination, 0)
+		if viewType == "event" && hasRole(roles, "declination") {
+			database.FindAllWhereEqual(&declines, "event_id", id)
+			encoder := json.NewEncoder(rw)
+			encoder.Encode(declines)
+			return
+		}
+		if viewType == "member" && (member.Id == id || hasRole(roles, "declination")) {
+			database.FindAllWhereEqual(&declines, "member_id", id)
+			encoder := json.NewEncoder(rw)
+			encoder.Encode(declines)
+			return
+		}
+	}
+
+	if r.Method == http.MethodPost || r.Method == http.MethodPut {
+		if viewType == "event" && member.Id == id {
+			declination := &model.Declination{}
+			decoder := json.NewDecoder(r.Body)
+			decoder.Decode(&declination)
+			declination.Id = id
+			declination.Time = time.Now()
+			database.Save(declination)
+		}
+	}
+
+	rw.WriteHeader(http.StatusForbidden)
 }
 
 //Handler for login.
