@@ -152,6 +152,11 @@ func equal(a interface{}, b interface{}) bool {
 
 		fieldName := aType.Field(i).Name
 
+		if fieldName == "Password" {
+			equal = true
+			continue
+		}
+
 		if !strings.HasSuffix(fieldName, "Id") && reflect.TypeOf(aField.Interface()).Name() != reflect.TypeOf(time.Time{}).Name() && aField.Kind() != reflect.Ptr {
 			equal = aField.Interface() == bField.Interface()
 		} else {

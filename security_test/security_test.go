@@ -1,6 +1,7 @@
 package security_test
 
 import (
+	"fmt"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/mvl-at/model"
 	"github.com/mvl-at/rest/database"
@@ -91,4 +92,25 @@ func TestFranzUpdateKarlCredentials(t *testing.T) {
 func TestFranzUpdatePaulCredentials(t *testing.T) {
 	credentials := &database.Credentials{MemberId: Paulina.Id, Password: Paulina.Password + "67", Username: Paulina.Username}
 	updateCredentials(credentials, false, true, Franz, t)
+}
+
+func TestPaulinaDeleteJosef(t *testing.T)  {
+	members := make([]*model.Member,0)
+	database.FindAll(&members)
+	fmt.Println(members)
+	deleteData(Josef, true, Paulina, t)
+	members = make([]*model.Member,0)
+	database.FindAll(&members)
+	for _, v := range members {
+		fmt.Println(*v)
+	}
+}
+
+func TestJosefDeletePaulina(t *testing.T)  {
+	deleteData(&model.Member{Id:Paulina.Id}, false, Josef, t)
+	members := make([]*model.Member,0)
+	database.FindAll(&members)
+	for _, v := range members {
+		fmt.Println(*v)
+	}
 }

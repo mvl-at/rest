@@ -124,11 +124,11 @@ func httpDelete(rw http.ResponseWriter, r *http.Request, a interface{}) (called 
 		modifiedValue := reflect.ValueOf(modified)
 		for i := 0; i < modifiedValue.Elem().NumField(); i++ {
 			definedRoles := modifiedValue.Elem().Type().Field(i).Tag.Get("roles")
-			if hasRole(roles, definedRoles) {
+			if definedRoles == "" || hasRole(roles, definedRoles) {
 				allowedFields++
 			}
 		}
-		if allowedFields >= modifiedValue.Elem().NumField()-1 {
+		if allowedFields >= modifiedValue.Elem().NumField() {
 			database.Delete(modified)
 		} else {
 			rw.WriteHeader(http.StatusForbidden)
