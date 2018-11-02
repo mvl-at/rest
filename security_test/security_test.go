@@ -11,7 +11,7 @@ import (
 
 func TestPaulInsertTuba(t *testing.T) {
 	tuba := &model.Instrument{Name: "Tuba", NamePlural: "Tuben"}
-	saveData(tuba, true, Paul, t)
+	saveData(tuba, true, Paulina, t)
 }
 
 func TestJosefInsertTrombone(t *testing.T) {
@@ -89,6 +89,6 @@ func TestFranzUpdateKarlCredentials(t *testing.T) {
 }
 
 func TestFranzUpdatePaulCredentials(t *testing.T) {
-	credentials := &database.Credentials{MemberId: Paul.Id, Password: Paul.Password + "67", Username: Paul.Username}
+	credentials := &database.Credentials{MemberId: Paulina.Id, Password: Paulina.Password + "67", Username: Paulina.Username}
 	updateCredentials(credentials, false, true, Franz, t)
 }

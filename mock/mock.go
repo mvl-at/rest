@@ -41,15 +41,16 @@ var Fluegelhorn = &model.Instrument{NamePlural: "Flügelhörner", Name: "Flügel
 var Horn = &model.Instrument{Name: "Waldhorn", NamePlural: "Waldhörner"}
 var Tenorhorn = &model.Instrument{NamePlural: "Tenorhörner", Name: "Tenorhorn"}
 
-var Paul = &model.Member{
-	FirstName:    "Paul",
+var Paulina = &model.Member{
+	FirstName:    "Paulina",
 	LastName:     "Blatt",
 	Joined:       1993,
 	Active:       true,
 	LoginAllowed: true,
 	Instrument:   Fluegelhorn,
 	Username:     "willi",
-	Password:     "123456"}
+	Password:     "123456",
+	Gender:       "f"}
 
 var Helmut = &model.Member{
 	FirstName:    "Helmut",
@@ -58,7 +59,8 @@ var Helmut = &model.Member{
 	Active:       true,
 	LoginAllowed: true,
 	Instrument:   Tenorhorn,
-	Password:     "dfldfg"}
+	Password:     "dfldfg",
+	Gender:       "m"}
 var Karl = &model.Member{
 	FirstName:    "Karl",
 	LastName:     "Baum",
@@ -66,7 +68,8 @@ var Karl = &model.Member{
 	Active:       true,
 	LoginAllowed: true,
 	Instrument:   Fluegelhorn,
-	Password:     "dfghhj"}
+	Password:     "dfghhj",
+	Gender:       "m"}
 var Franz = &model.Member{
 	FirstName:    "Franz",
 	LastName:     "Moos",
@@ -74,7 +77,8 @@ var Franz = &model.Member{
 	Active:       false,
 	LoginAllowed: false,
 	Instrument:   Horn,
-	Password:     "giogftr"}
+	Password:     "giogftr",
+	Gender:       "m"}
 var Josef = &model.Member{
 	FirstName:    "Josef",
 	LastName:     "Strauch",
@@ -83,18 +87,19 @@ var Josef = &model.Member{
 	LoginAllowed: true,
 	Instrument:   Tenorhorn,
 	Username:     "josef",
-	Password:     "111"}
+	Password:     "111",
+	Gender:       "m"}
 
 var Obmann = &model.LeaderRole{Name: "Obmann", NamePlural: "Obmänner"}
 var Archivar = &model.LeaderRole{Name: "Archivar", NamePlural: "Archivare"}
 var Root = &model.Role{Id: "root", Name: "Root", NamePlural: "Root"}
 var Credentials = &model.Role{Id: "credentials", Name: "Login Verwalter", NamePlural: "Login Verwalter"}
 var Instrumente = &model.Role{Id: "instrument", Name: "Instrumenten Manager", NamePlural: "Instrumenten Manager"}
-var PaulObmann = &model.LeaderRoleMember{LeaderRole: Obmann, Member: Paul, Priority: 0}
+var PaulObmann = &model.LeaderRoleMember{LeaderRole: Obmann, Member: Paulina, Priority: 0}
 var HelmutArchivar = &model.LeaderRoleMember{LeaderRole: Archivar, Member: Helmut, Priority: 0}
-var PaulArchivarStellvertreter = &model.LeaderRoleMember{LeaderRole: Archivar, Member: Paul, Priority: 1}
+var PaulArchivarStellvertreter = &model.LeaderRoleMember{LeaderRole: Archivar, Member: Paulina, Priority: 1}
 var JosefRoot = &model.RoleMember{Role: Root, Member: Josef}
-var PaulInstrumente = &model.RoleMember{Role: Instrumente, Member: Paul}
+var PaulInstrumente = &model.RoleMember{Role: Instrumente, Member: Paulina}
 var Events = &model.Role{Id: "event", Name: "Termine", NamePlural: "Termine"}
 var HelmutEvents = &model.RoleMember{Member: Helmut, Role: Events}
 var FranzCredentials = &model.RoleMember{Member: Franz, Role: Credentials}
@@ -102,7 +107,7 @@ var FranzCredentials = &model.RoleMember{Member: Franz, Role: Credentials}
 //Initializes all mock data.
 func MockData() {
 	events := []*model.Event{Fruehschoppen, Generalversammlung, Marschmusikwertung}
-	members := []*model.Member{Paul, Helmut, Karl, Franz, Josef}
+	members := []*model.Member{Paulina, Helmut, Karl, Franz, Josef}
 	instruments := []*model.Instrument{Fluegelhorn, Horn, Tenorhorn}
 	roles := []*model.Role{Root, Instrumente}
 	leaderRoles := []*model.LeaderRole{Obmann, Archivar}

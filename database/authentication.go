@@ -24,7 +24,7 @@ func passwordCorrect(plainPassword string, hashedPassword string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(plainPassword)) == nil
 }
 
-//Persists the given credentials to the equivalent member into the 
+//Persists the given credentials to the equivalent member into the
 func UpdateCredentials(credentials *Credentials) {
 	member := &model.Member{Id: credentials.MemberId}
 	Find(member)
