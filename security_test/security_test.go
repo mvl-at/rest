@@ -94,23 +94,34 @@ func TestFranzUpdatePaulCredentials(t *testing.T) {
 	updateCredentials(credentials, false, true, Franz, t)
 }
 
-func TestPaulinaDeleteJosef(t *testing.T)  {
-	members := make([]*model.Member,0)
+func TestPaulinaDeleteJosef(t *testing.T) {
+	members := make([]*model.Member, 0)
 	database.FindAll(&members)
 	fmt.Println(members)
 	deleteData(Josef, true, Paulina, t)
-	members = make([]*model.Member,0)
+	members = make([]*model.Member, 0)
 	database.FindAll(&members)
 	for _, v := range members {
 		fmt.Println(*v)
 	}
 }
 
-func TestJosefDeletePaulina(t *testing.T)  {
-	deleteData(&model.Member{Id:Paulina.Id}, false, Josef, t)
-	members := make([]*model.Member,0)
+func TestJosefDeletePaulina(t *testing.T) {
+	deleteData(&model.Member{Id: Paulina.Id}, false, Josef, t)
+	members := make([]*model.Member, 0)
 	database.FindAll(&members)
 	for _, v := range members {
 		fmt.Println(*v)
 	}
+}
+
+func TestJosefChangesNameButNotPassword(t *testing.T) {
+	Josef.LastName = "Strauchi"
+	saveData(Josef, true, Josef, t)
+	nJosef := &model.Member{Id: Josef.Id}
+	database.Find(nJosef)
+	if nJosef.Password == "" {
+		t.Errorf("password of %s is empty but should not", Josef.FirstName)
+	}
+
 }
