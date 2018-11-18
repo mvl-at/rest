@@ -1,6 +1,7 @@
 package database
 
 import (
+	"fmt"
 	"github.com/mvl-at/model"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -30,7 +31,10 @@ func UpdateCredentials(credentials *Credentials) {
 	Find(member)
 	if member != nil {
 		member.Username = credentials.Username
-		member.Password = PasswordHash(credentials.Password)
+		fmt.Println(credentials.Password)
+		if credentials.Password != "" {
+			member.Password = PasswordHash(credentials.Password)
+		}
 		Save(member)
 	}
 }

@@ -89,7 +89,7 @@ func httpPostPut(rw http.ResponseWriter, r *http.Request, a interface{}) (called
 		anyFieldChanges := false
 		for i := 0; i < databaseValue.Elem().NumField(); i++ {
 			definedRoles := databaseValue.Elem().Type().Field(i).Tag.Get("roles")
-			if hasRole(roles, definedRoles) && databaseValue.Elem().Type().Field(i).Tag.Get("json") != "-"{
+			if hasRole(roles, definedRoles) && databaseValue.Elem().Type().Field(i).Tag.Get("json") != "-" {
 				databaseValue.Elem().Field(i).Set(modifiedValue.Elem().Field(i))
 				anyFieldChanges = true
 			}
