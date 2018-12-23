@@ -104,6 +104,11 @@ var Events = &model.Role{Id: "event", Name: "Termine", NamePlural: "Termine"}
 var HelmutEvents = &model.RoleMember{Member: Helmut, Role: Events}
 var FranzCredentials = &model.RoleMember{Member: Franz, Role: Credentials}
 
+var florentiner = model.Archive{Title: "Florentiner Marsch", Level: "C", Composer: "Julius Fučík", Arranger: "Bruno Harmann", Location: "Mappe 31", Style: "Böhmischer Marsch", Publisher: "Bosworth & Co."}
+var abendsegen = model.Archive{Title: "Abendsegen", Level: "B", Composer: "Engelbert Humperdinck", Arranger: "Markus Nentwich", Location: "Archiv", Style: "Klassisch"}
+var castaldo = model.Archive{Title: "Castaldo Marsch", Level: "B", Composer: "Rudolf Nováček", Arranger: "Franz Watz", Location: "Blau 20", Style: "Böhmischer Marsch", Publisher: "Johann Hoffmann´s Wwe"}
+var falco = model.Archive{Title: "The Best of Falco", Level: "B", Publisher: "Kock Musikverlag", Location: "Archiv", Note: "7. Fagott 2. Seite fehlt", Style: "Rock, Pop"}
+
 //Initializes all mock data.
 func MockData() {
 	events := []*model.Event{Fruehschoppen, Generalversammlung, Marschmusikwertung}
@@ -113,6 +118,7 @@ func MockData() {
 	leaderRoles := []*model.LeaderRole{Obmann, Archivar}
 	roleMembers := []*model.RoleMember{JosefRoot, PaulInstrumente, HelmutEvents, FranzCredentials}
 	leaderRoleMembers := []*model.LeaderRoleMember{PaulArchivarStellvertreter, PaulObmann, HelmutArchivar}
+	archive := []model.Archive{florentiner, abendsegen, castaldo, falco}
 
 	for _, v := range events {
 		database.Save(v)
@@ -139,5 +145,12 @@ func MockData() {
 
 	for _, v := range leaderRoleMembers {
 		database.Save(v)
+	}
+
+	for i := 0; i < 7; i++ {
+		for _, v := range archive {
+			clone := v
+			database.Save(&clone)
+		}
 	}
 }

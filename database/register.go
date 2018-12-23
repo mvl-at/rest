@@ -9,6 +9,7 @@ import (
 
 //Registers all model structs from this project to the database.
 func Register() {
+	TableCreate(&model.Archive{})
 	TableCreate(&model.Event{})
 	TableCreate(&model.Instrument{})
 	TableCreate(&model.Member{})

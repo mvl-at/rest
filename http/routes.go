@@ -21,6 +21,7 @@ func Routes() {
 	http.HandleFunc("/rolesMembers", rest(rolesMembers))
 	http.HandleFunc("/leaderRoles", rest(leaderRoles))
 	http.HandleFunc("/leaderRolesMembers", rest(leaderRolesMembers))
+	http.HandleFunc("/archive", rest(archive))
 	http.HandleFunc("/login", rest(login))
 	http.HandleFunc("/credentials", rest(credentials))
 	http.HandleFunc("/eventsrange", rest(eventsRange))
@@ -203,6 +204,14 @@ func leaderRolesMembers(rw http.ResponseWriter, r *http.Request) {
 func rolesMembers(rw http.ResponseWriter, r *http.Request) {
 
 	if !httpGet(rw, r, &model.RoleMember{}) && !httpPostPut(rw, r, &model.RoleMember{}) && !httpDelete(rw, r, &model.RoleMember{}) {
+		rw.WriteHeader(http.StatusNotFound)
+	}
+}
+
+//Handler for archive.
+func archive(rw http.ResponseWriter, r *http.Request) {
+
+	if !httpGet(rw, r, &model.Archive{}) && !httpPostPut(rw, r, &model.Archive{}) && !httpDelete(rw, r, &model.Archive{}) {
 		rw.WriteHeader(http.StatusNotFound)
 	}
 }
