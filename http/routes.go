@@ -68,7 +68,7 @@ func httpPostPut(rw http.ResponseWriter, r *http.Request, a interface{}) (called
 	if called {
 
 		token := r.Header.Get("Access-token")
-		valid, member := database.Check(token)
+		valid, member, _ := database.Check(token)
 
 		if !valid || member == nil {
 			rw.WriteHeader(http.StatusForbidden)
@@ -110,7 +110,7 @@ func httpDelete(rw http.ResponseWriter, r *http.Request, a interface{}) (called 
 	if called {
 
 		token := r.Header.Get("access-token")
-		valid, member := database.Check(token)
+		valid, member, _ := database.Check(token)
 
 		if !valid || member == nil {
 			rw.WriteHeader(http.StatusForbidden)
@@ -210,7 +210,17 @@ func rolesMembers(rw http.ResponseWriter, r *http.Request) {
 
 //Handler for archive.
 func archive(rw http.ResponseWriter, r *http.Request) {
-
+	ok, member, _ := database.Check(r.Header.Get("Access-Token"))
+	if !ok {
+		rw.WriteHeader(http.StatusForbidden)
+		return
+	}
+	roles := make([]*model.RoleMember, 0)
+	database.FindAllWhereEqual(&roles, "member_id", member.Id)
+	if !hasRole(roles, "archive") {
+		rw.WriteHeader(http.StatusForbidden)
+		return
+	}
 	if !httpGet(rw, r, &model.Archive{}) && !httpPostPut(rw, r, &model.Archive{}) && !httpDelete(rw, r, &model.Archive{}) {
 		rw.WriteHeader(http.StatusNotFound)
 	}
@@ -244,7 +254,7 @@ func credentials(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(http.StatusNotFound)
 	}
 	token := r.Header.Get("Access-token")
-	valid, member := database.Check(token)
+	valid, member, _ := database.Check(token)
 	if !valid || member == nil {
 		rw.WriteHeader(http.StatusForbidden)
 		return
@@ -296,7 +306,7 @@ func eventsRange(rw http.ResponseWriter, r *http.Request) {
 //returns information about a user using it's jwt
 func userInfo(rw http.ResponseWriter, r *http.Request) {
 	jwt := r.Header.Get("Access-token")
-	valid, member := database.Check(jwt)
+	valid, member, _ := database.Check(jwt)
 	if !valid {
 		rw.WriteHeader(http.StatusForbidden)
 		return

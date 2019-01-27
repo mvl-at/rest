@@ -31,8 +31,9 @@ type JWTPayload struct {
 }
 
 type UserInfo struct {
-	Member *model.Member `json:"member"`
-	Roles  []*model.Role `json:"roles"`
+	Member     *model.Member `json:"member"`
+	Roles      []*model.Role `json:"roles"`
+	Expiration time.Time     `json:"exp"`
 }
 
 //Does the login process.
@@ -92,7 +93,7 @@ func fetchMember(id int64) *model.Member {
 //Checks, if the given JWT is valid.
 //Returns true if it is valid.
 //Returns the member which belongs to the JWT. If the JWT is not valid, the member will be nil.
-func Check(token string) (valid bool, member *model.Member) {
+func Check(token string) (valid bool, member *model.Member, expiration time.Time) {
 	tokenParts := strings.Split(token, ".")
 	valid = false
 
@@ -109,6 +110,7 @@ func Check(token string) (valid bool, member *model.Member) {
 	}
 
 	member = fetchMember(payload.MemberId)
+	expiration = payload.Expiration
 
 	if !member.LoginAllowed {
 		return
