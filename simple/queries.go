@@ -23,7 +23,7 @@ func QueryData(query string, data *[]DBO, numFields int) error {
 	}
 	defer rows.Close()
 	for counter := 0; rows.Next(); counter++ {
-		dbo, err := (*data)[0].Scan(rows, data)
+		dbo, err := (*data)[0].Scan(rows.Scan, data)
 		if err != nil {
 			return err
 		}

@@ -8,8 +8,12 @@ import (
 
 func TestMembers(t *testing.T) {
 	simple.OpenDatabase()
-	members := []simple.DBO{simple.MemberGroup{}}
+	members := []simple.DBO{&simple.MemberGroup{}}
 	err := simple.QueryData(simple.MemberQuery, &members, 7)
 	fmt.Println(err)
-	fmt.Println(members)
+	for _, v := range members {
+		m := v.(*simple.MemberGroup)
+		m.Prettyfy()
+		fmt.Println(m)
+	}
 }
