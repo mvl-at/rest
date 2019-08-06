@@ -29,11 +29,17 @@ func config() (conf *Configuration) {
 		jwtSecret := make([]byte, 8)
 		rand.Read(jwtSecret)
 		conf = &Configuration{
-			Host:          "0.0.0.0",
-			Port:          7301,
-			SQLiteFile:    "mvl.sqlite",
-			JwtSecret:     fmt.Sprintf("%x", jwtSecret),
-			JwtExpiration: 30}
+			Host:                "0.0.0.0",
+			Port:                7301,
+			SQLiteFile:          "mvl.sqlite",
+			JwtSecret:           fmt.Sprintf("%x", jwtSecret),
+			JwtExpiration:       30,
+			ApiRoute:            "/api/",
+			SimpleRoute:         "/simple/",
+			PersistenceLocation: "simple",
+			EventsFile:          "events.json",
+			MembersFile:         "members.json",
+			LeadersFile:         "leaders.json"}
 		enc := json.NewEncoder(fil)
 		enc.SetIndent("", "  ")
 		err = enc.Encode(conf)
@@ -50,9 +56,15 @@ func config() (conf *Configuration) {
 
 //Struct which holds the configuration.
 type Configuration struct {
-	Host          string `json:"host"`
-	Port          uint16 `json:"port"`
-	SQLiteFile    string `json:"sqliteFile"`
-	JwtSecret     string `json:"jwtSecret"`
-	JwtExpiration int    `json:"jwtExpiration"`
+	Host                string `json:"host"`
+	Port                uint16 `json:"port"`
+	SQLiteFile          string `json:"sqliteFile"`
+	JwtSecret           string `json:"jwtSecret"`
+	JwtExpiration       int    `json:"jwtExpiration"`
+	ApiRoute            string `json:"apiRoute"`
+	SimpleRoute         string `json:"simpleRoute"`
+	PersistenceLocation string `json:"persistenceLocation"`
+	EventsFile          string `json:"eventsFile"`
+	MembersFile         string `json:"membersFile"`
+	LeadersFile         string `json:"leadersFile"`
 }
