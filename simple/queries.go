@@ -3,13 +3,14 @@ package simple
 import (
 	"database/sql"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/mvl-at/rest/context"
 )
 
 var db *sql.DB
 
 func OpenDatabase() error {
 	var err error
-	db, err = sql.Open("sqlite3", "/home/richi/go/src/github.com/mvl-at/mvl.sqlite")
+	db, err = sql.Open("sqlite3", context.Conf.SQLiteFile)
 	if err != nil {
 		return err
 	}
