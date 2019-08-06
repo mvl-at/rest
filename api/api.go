@@ -1,10 +1,11 @@
-package http
+package api
 
 import (
 	"encoding/json"
 	"github.com/mvl-at/model"
 	"github.com/mvl-at/rest/context"
 	"github.com/mvl-at/rest/database"
+	"github.com/mvl-at/rest/httpUtils"
 	"io/ioutil"
 	"net/http"
 	"reflect"
@@ -13,34 +14,21 @@ import (
 )
 
 //Registers all routes to the http service.
-func Routes() {
-	http.HandleFunc("/events", rest(events))
-	http.HandleFunc("/members", rest(members))
-	http.HandleFunc("/instruments", rest(instruments))
-	http.HandleFunc("/roles", rest(roles))
-	http.HandleFunc("/rolesMembers", rest(rolesMembers))
-	http.HandleFunc("/leaderRoles", rest(leaderRoles))
-	http.HandleFunc("/leaderRolesMembers", rest(leaderRolesMembers))
-	http.HandleFunc("/archive", rest(archive))
-	http.HandleFunc("/login", rest(login))
-	http.HandleFunc("/credentials", rest(credentials))
-	http.HandleFunc("/eventsrange", rest(eventsRange))
-	http.HandleFunc("/userinfo", rest(userInfo))
-}
-
-//Modifies the http header for use with REST.
-func rest(next http.HandlerFunc) http.HandlerFunc {
-	return func(writer http.ResponseWriter, request *http.Request) {
-		writer.Header().Set("Access-Control-Allow-Origin", "*")
-		writer.Header().Set("content-type", "application/json")
-		writer.Header().Set("Access-Control-Expose-Headers", "Access-token")
-		if request.Method == http.MethodOptions {
-			writer.Header().Set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS")
-			writer.Header().Set("Access-Control-Allow-Headers", "access-token,content-type")
-			return
-		}
-		next.ServeHTTP(writer, request)
-	}
+func Handler() http.Handler {
+	mux := &http.ServeMux{}
+	mux.HandleFunc("/events", httpUtils.Rest(events))
+	mux.HandleFunc("/members", httpUtils.Rest(members))
+	mux.HandleFunc("/instruments", httpUtils.Rest(instruments))
+	mux.HandleFunc("/roles", httpUtils.Rest(roles))
+	mux.HandleFunc("/rolesMembers", httpUtils.Rest(rolesMembers))
+	mux.HandleFunc("/leaderRoles", httpUtils.Rest(leaderRoles))
+	mux.HandleFunc("/leaderRolesMembers", httpUtils.Rest(leaderRolesMembers))
+	mux.HandleFunc("/archive", httpUtils.Rest(archive))
+	mux.HandleFunc("/login", httpUtils.Rest(login))
+	mux.HandleFunc("/credentials", httpUtils.Rest(credentials))
+	mux.HandleFunc("/eventsrange", httpUtils.Rest(eventsRange))
+	mux.HandleFunc("/userinfo", httpUtils.Rest(userInfo))
+	return mux
 }
 
 //Generic handler for http GET.
