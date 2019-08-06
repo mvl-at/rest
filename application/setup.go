@@ -6,6 +6,7 @@ import (
 	"github.com/mvl-at/rest/context"
 	"github.com/mvl-at/rest/database"
 	"github.com/mvl-at/rest/http"
+	"github.com/mvl-at/rest/simple"
 	"math/rand"
 	"time"
 )
@@ -18,6 +19,7 @@ func Setup() {
 	qbs.RegisterSqlite3(context.Conf.SQLiteFile)
 	database.Register()
 	database.CheckRoot()
-	http.Routes()
+	simple.OpenDatabase()
+	simple.PersistenceRunner()
 	http.Run()
 }
