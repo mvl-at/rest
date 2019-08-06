@@ -34,17 +34,17 @@ type DBO interface {
 
 type Member struct {
 	Description string `json:"description"`
-	Joined      int
-	LastName    string
+	joined      int
+	lastName    string
 	Name        string `json:"name"`
 	Picture     string `json:"picture"`
 	Pretty      bool
 }
 
 func (m *Member) Prettyfy() {
-	m.Name = fmt.Sprintf("%s %s", m.Name, m.LastName)
-	if m.Joined != 0 {
-		m.Description = fmt.Sprintf("Betritt: %d", m.Joined)
+	m.Name = fmt.Sprintf("%s %s", m.Name, m.lastName)
+	if m.joined != 0 {
+		m.Description = fmt.Sprintf("Betritt: %d", m.joined)
 	}
 	m.Pretty = true
 }
@@ -80,7 +80,7 @@ func (m *MemberGroup) IsPretty() bool {
 func (*MemberGroup) Scan(scan DBScan, data *[]DBO) (*DBO, error) {
 	mg := &MemberGroup{Pretty: false, Members: make([]Member, 1)}
 	m := Member{Pretty: false}
-	err := scan(&m.Name, &m.Joined, &m.LastName, &m.Picture, &mg.InstrumentId, &mg.Instrument, &mg.InstrumentPlural)
+	err := scan(&m.Name, &m.joined, &m.lastName, &m.Picture, &mg.InstrumentId, &mg.Instrument, &mg.InstrumentPlural)
 	if err != nil {
 		return nil, err
 	}
@@ -99,31 +99,31 @@ func (*MemberGroup) Scan(scan DBScan, data *[]DBO) (*DBO, error) {
 
 type Event struct {
 	Begin             string `json:"begin"`
-	BeginTime         time.Time
+	beginTime         time.Time
 	Day               int `json:"day"`
-	Date              time.Time
+	date              time.Time
 	Ending            string `json:"ending"`
-	EndingTime        time.Time
+	endingTime        time.Time
 	Important         bool   `json:"important"`
 	Internal          bool   `json:"internal"`
 	MusicianBegin     string `json:"musician_begin"`
-	MusicianBeginTime time.Time
-	MusicianPlace     string
+	musicianBeginTime time.Time
+	musicianPlace     string
 	Name              string `json:"name"`
 	Note              string `json:"note"`
-	OpenEnd           int
-	Place             string
+	openEnd           int
+	place             string
 	Weekday           string `json:"weekday"`
-	Pretty            bool
+	pretty            bool
 }
 
 func (e *Event) Prettyfy() {
-	e.Day = e.Date.Day()
-	e.Begin = fmt.Sprintf("%s Uhr, %s", e.BeginTime.Format("15:04"), e.Begin)
-	e.MusicianBegin = fmt.Sprintf("%s Uhr, %s", e.MusicianBeginTime.Format("15:04"), e.MusicianPlace)
-	switch e.OpenEnd {
+	e.Day = e.date.Day()
+	e.Begin = fmt.Sprintf("%s Uhr, %s", e.beginTime.Format("15:04"), e.Begin)
+	e.MusicianBegin = fmt.Sprintf("%s Uhr, %s", e.musicianBeginTime.Format("15:04"), e.musicianPlace)
+	switch e.openEnd {
 	case 0:
-		e.Ending = fmt.Sprintf("bis ca. %s Uhr", e.EndingTime.Format("15:04"))
+		e.Ending = fmt.Sprintf("bis ca. %s Uhr", e.endingTime.Format("15:04"))
 	case 1:
 		e.Ending = "offenes Ende"
 	case 2:
@@ -132,12 +132,12 @@ func (e *Event) Prettyfy() {
 	if e.Note != "" {
 		e.Ending += ", " + e.Note
 	}
-	e.Weekday = Weekdays[(int(e.Date.Weekday())+6)%7]
-	e.Pretty = true
+	e.Weekday = Weekdays[(int(e.date.Weekday())+6)%7]
+	e.pretty = true
 }
 
 func (e *Event) IsPretty() bool {
-	return e.Pretty
+	return e.pretty
 }
 
 func (e *Event) Scan(scan DBScan, data *[]DBO) (*DBO, error) {
@@ -166,13 +166,13 @@ func (e *EventGroup) IsPretty() bool {
 
 func (*EventGroup) Scan(scan DBScan, data *[]DBO) (*DBO, error) {
 	eg := &EventGroup{Events: make([]Event, 1), Pretty: false}
-	e := Event{Pretty: false}
-	err := scan(&e.Date, &e.EndingTime, &e.Important, &e.Internal, &e.MusicianPlace, &e.MusicianBeginTime, &e.Name, &e.Note, &e.OpenEnd, &e.Place, &e.BeginTime)
+	e := Event{pretty: false}
+	err := scan(&e.date, &e.endingTime, &e.Important, &e.Internal, &e.musicianPlace, &e.musicianBeginTime, &e.Name, &e.Note, &e.openEnd, &e.place, &e.beginTime)
 	if err != nil {
 		return nil, err
 	}
 	eg.Events[0] = e
-	eg.Month = e.Date.Format("1")
+	eg.Month = e.date.Format("1")
 	if len(*data) > 0 {
 		lastElement := (*data)[len(*data)-1].(*EventGroup)
 		if lastElement.Month == eg.Month {

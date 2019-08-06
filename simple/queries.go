@@ -9,7 +9,7 @@ var db *sql.DB
 
 func OpenDatabase() error {
 	var err error
-	db, err = sql.Open("sqlite3", "../../mvl.sqlite")
+	db, err = sql.Open("sqlite3", "/home/richi/go/src/github.com/mvl-at/mvl.sqlite")
 	if err != nil {
 		return err
 	}
