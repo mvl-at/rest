@@ -5,8 +5,9 @@ import (
 	"time"
 )
 
-const MemberQuery = "select m.first_name, m.joined, m.last_name, m.picture, i.id, i.name, i.name_plural from member m inner join instrument i on m.instrument_id = i.id where m.active = 1 order by i.name, m.joined, m.last_name, m.first_name"
+const MemberQuery = "select m.first_name, m.joined, m.last_name, m.id, i.id, i.name, i.name_plural from member m inner join instrument i on m.instrument_id = i.id where m.active = 1 order by i.name, m.joined, m.last_name, m.first_name"
 const EventQuery = "select e.date, e.end, e.important, e.internal, e.musician_place, e.musician_time, e.name, e.note, e.open_end, e.place, e.time from event e where e.date >= date('now') order by e.date, e.musician_time"
+const LeaderQuery = "select (select group_concat((lr2.name || ifnull((select ' Stellvertreter'from leader_role_member lrm4 where lrm4.id = lrm2.id and lrm4.deputy), '')), ', ') from (select * from leader_role_member lrm3 order by lrm3.priority) lrm2 inner join leader_role lr2 on lrm2.leader_role_id = lr2.id where lrm2.member_id = m.id group by lrm2.member_id), (m.first_name || ' ' || m.last_name), m.id from leader_role_member lrm inner join member m on lrm.member_id = m.id inner join leader_role lr on lrm.leader_role_id = lr.id group by m.id order by lrm.priority, lr.name;"
 
 var Months = map[string]string{
 	"1":  "Jänner",
@@ -49,6 +50,10 @@ func (m *Member) Prettyfy() {
 	m.Pretty = true
 }
 
+func (m *Member) PictureLink() {
+	m.Picture = "https://assets.mvl.at/member/" + m.Picture
+}
+
 func (m *Member) IsPretty() bool {
 	return m.Pretty
 }
@@ -68,6 +73,7 @@ func (m *MemberGroup) Prettyfy() {
 	for i, member := range m.Members {
 		if !member.IsPretty() {
 			(&m.Members[i]).Prettyfy()
+			(&m.Members[i]).PictureLink()
 		}
 	}
 	m.Pretty = true
@@ -127,7 +133,7 @@ func (e *Event) Prettyfy() {
 	case 1:
 		e.Ending = "offenes Ende"
 	case 2:
-		e.Ending = "Ende unbekannt, %s"
+		e.Ending = "Ende unbekannt, "
 	}
 	if e.Note != "" {
 		e.Ending += ", " + e.Note
@@ -182,5 +188,26 @@ func (*EventGroup) Scan(scan DBScan, data *[]DBO) (*DBO, error) {
 		}
 	}
 	dbo := DBO(eg)
+	return &dbo, nil
+}
+
+type Leader struct {
+	Member
+	Pretty bool `json:"-"`
+}
+
+func (*Leader) Prettyfy() {}
+
+func (l *Leader) IsPretty() bool {
+	return l.Pretty
+}
+
+func (l *Leader) Scan(scan DBScan, _ *[]DBO) (*DBO, error) {
+	ld := &Leader{Pretty: true}
+	err := scan(&ld.Description, &ld.Name, &ld.Picture)
+	if err != nil {
+		return nil, err
+	}
+	dbo := DBO(ld)
 	return &dbo, nil
 }

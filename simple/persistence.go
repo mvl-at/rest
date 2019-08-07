@@ -18,6 +18,8 @@ func PersistenceRunner() {
 		{
 			data:     events,
 			fileName: context.Conf.EventsFile},
+		{data: leaders,
+			fileName: context.Conf.LeadersFile},
 		{data: members,
 			fileName: context.Conf.MembersFile}}
 

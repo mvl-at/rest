@@ -10,6 +10,7 @@ import (
 func Handler() http.Handler {
 	mux := &http.ServeMux{}
 	mux.HandleFunc("/events", httpUtils.Rest(json(events)))
+	mux.HandleFunc("/leaders", httpUtils.Rest(json(leaders)))
 	mux.HandleFunc("/members", httpUtils.Rest(json(members)))
 	return mux
 }
@@ -34,6 +35,18 @@ func events() interface{} {
 		v.Prettyfy()
 	}
 	return events
+}
+
+func leaders() interface{} {
+	leaders := []DBO{&Leader{}}
+	err := QueryData(LeaderQuery, &leaders, 3)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	for _, v := range leaders {
+		v.(*Leader).PictureLink()
+	}
+	return leaders
 }
 
 func members() interface{} {
