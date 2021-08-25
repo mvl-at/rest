@@ -6,12 +6,19 @@ import (
 	"github.com/mvl-at/rest/context"
 	"github.com/mvl-at/rest/database"
 	"github.com/mvl-at/rest/httpUtils"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"reflect"
+	"sort"
+	"strconv"
 	"strings"
+	"text/template"
 	"time"
 )
+
+const numbers = "0123456789"
+const bookTemplate = "book-index.tmp"
 
 //Registers all routes to the http service.
 func Handler() http.Handler {
@@ -28,6 +35,7 @@ func Handler() http.Handler {
 	mux.HandleFunc("/credentials", httpUtils.Rest(credentials))
 	mux.HandleFunc("/eventsrange", httpUtils.Rest(eventsRange))
 	mux.HandleFunc("/userinfo", httpUtils.Rest(userInfo))
+	mux.HandleFunc("/bookIndex", httpUtils.Cors(bookIndex))
 	return mux
 }
 
@@ -306,4 +314,103 @@ func userInfo(rw http.ResponseWriter, r *http.Request) {
 		userInfo.Roles = append(userInfo.Roles, role.Role)
 	}
 	json.NewEncoder(rw).Encode(&userInfo)
+}
+
+// create book indices, only authorized request are able to use a template from a post body
+// the book to use can be defined via the comma separated locations http header
+func bookIndex(rw http.ResponseWriter, r *http.Request) {
+	validMethod := false
+	locations := context.Conf.DefaultBooks
+	var temp *template.Template = nil
+	if r.Method == http.MethodPost {
+		token := r.Header.Get("Access-token")
+		valid, member, _ := database.Check(token)
+
+		if !valid || member == nil {
+			rw.WriteHeader(http.StatusForbidden)
+			return
+		}
+		if len(r.Header.Get("locations")) > 0 {
+			locations = strings.Split(r.Header.Get("locations"), ",")
+		}
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			context.Log.Printf("Cannot read request body: %s\n", err.Error())
+			rw.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		temp, err = template.New("bookIndex").Parse(string(body))
+		if err != nil {
+			context.Log.Printf("Got an invalid template for a book index: %s\n", err.Error())
+			rw.WriteHeader(http.StatusBadRequest)
+			_, err := rw.Write([]byte(err.Error()))
+			if err != nil {
+				context.ErrLog.Println("Cannot write error message to response")
+			}
+			return
+		}
+		validMethod = true
+	}
+
+	if r.Method == http.MethodGet {
+		var err error = nil
+		temp, err = template.ParseFiles(bookTemplate)
+		if err != nil {
+			context.ErrLog.Printf("Cannot parse book template from default file: %s\n", err.Error())
+			rw.WriteHeader(http.StatusInternalServerError)
+		} else {
+			rw.Header().Set("Content-Disposition", ": inline; filename=\"index."+context.Conf.DefaultBookType+"\"")
+		}
+		validMethod = true
+	}
+
+	if validMethod {
+		err := streamLocations(locations, temp, rw)
+		if err != nil {
+			context.Log.Printf("Cannot generate book index from template: %s\n", err.Error())
+			rw.WriteHeader(http.StatusUnprocessableEntity)
+		}
+	} else {
+		rw.WriteHeader(http.StatusMethodNotAllowed)
+	}
+}
+
+func bookIndexGet()
+
+func streamLocations(locations []string, temp *template.Template, w io.Writer) error {
+	index := BookIndex{}
+	index.Books = make([]Book, len(locations))
+	for i := range index.Books {
+		index.Books[i].Scores = make([]*model.Archive, 0)
+		index.Books[i].Title = locations[i]
+		database.FindAllWhereEqual(&index.Books[i].Scores, "location", locations[i])
+		sortScores(index.Books[i].Scores)
+	}
+	return temp.Execute(w, index)
+}
+
+func sortScores(scores []*model.Archive) {
+	sort.Slice(scores, func(i, j int) bool {
+		// page number is typically stored in the `Note` field
+		pageI := strings.Split(scores[i].Note, "-")[0]
+		pageJ := strings.Split(scores[j].Note, "-")[0]
+		indexI := strings.IndexAny(pageI, numbers)
+		indexJ := strings.IndexAny(pageJ, numbers)
+		// i has a prefix but j not
+		if indexI > 0 && indexJ == 0 {
+			return true
+		}
+		// j has a prefix but i not
+		if indexJ > 0 && indexI == 0 {
+			return false
+		}
+		numI, _ := strconv.ParseUint(pageI[indexI:], 10, 64)
+		numJ, _ := strconv.ParseUint(pageJ[indexJ:], 10, 64)
+		// only comparison of parsable number is required if prefix is the same
+		if pageI[:indexI] == pageJ[:indexJ] {
+			return numI < numJ
+		}
+
+		return strings.Compare(pageI[:indexI], pageJ[:indexJ]) < 0
+	})
 }

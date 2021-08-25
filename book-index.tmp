@@ -1,0 +1,6 @@
+Titel,Buch,Seite
+{{range .Books}}
+{{range .Scores}}
+{{- .Title }},{{ .Location }},{{ .Note }}
+{{end}}
+{{end}}

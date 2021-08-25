@@ -1,0 +1,26 @@
+\documentclass[a4paper]{article}
+\usepackage{geometry}
+\geometry{
+	paper=a4paper,
+	margin=1cm
+}
+\usepackage[utf8]{inputenc}
+\usepackage[naustrian]{babel}
+
+\pagenumbering{gobble}
+
+\begin{document}
+
+
+
+{{range .Books}}
+\subsubsection*{ {{- .Title -}} }
+
+{{range .Scores}}
+\contentsline{subsection}{ {{- .Title -}} }{ {{- .Note -}} }
+{{end}}
+
+{{end}}
+
+
+\end{document}

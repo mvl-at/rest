@@ -39,7 +39,9 @@ func config() (conf *Configuration) {
 			PersistenceLocation: "simple",
 			EventsFile:          "events.json",
 			MembersFile:         "members.json",
-			LeadersFile:         "leaders.json"}
+			LeadersFile:         "leaders.json",
+			DefaultBooks:        []string{"Rot", "Grün", "Blau", "Rote Mappe"},
+			DefaultBookType: "csv"}
 		enc := json.NewEncoder(fil)
 		enc.SetIndent("", "  ")
 		err = enc.Encode(conf)
@@ -56,15 +58,17 @@ func config() (conf *Configuration) {
 
 //Struct which holds the configuration.
 type Configuration struct {
-	Host                string `json:"host"`
-	Port                uint16 `json:"port"`
-	SQLiteFile          string `json:"sqliteFile"`
-	JwtSecret           string `json:"jwtSecret"`
-	JwtExpiration       int    `json:"jwtExpiration"`
-	ApiRoute            string `json:"apiRoute"`
-	SimpleRoute         string `json:"simpleRoute"`
-	PersistenceLocation string `json:"persistenceLocation"`
-	EventsFile          string `json:"eventsFile"`
-	MembersFile         string `json:"membersFile"`
-	LeadersFile         string `json:"leadersFile"`
+	Host                string   `json:"host"`
+	Port                uint16   `json:"port"`
+	SQLiteFile          string   `json:"sqliteFile"`
+	JwtSecret           string   `json:"jwtSecret"`
+	JwtExpiration       int      `json:"jwtExpiration"`
+	ApiRoute            string   `json:"apiRoute"`
+	SimpleRoute         string   `json:"simpleRoute"`
+	PersistenceLocation string   `json:"persistenceLocation"`
+	EventsFile          string   `json:"eventsFile"`
+	MembersFile         string   `json:"membersFile"`
+	LeadersFile         string   `json:"leadersFile"`
+	DefaultBooks        []string `json:"defaultBooks"`
+	DefaultBookType     string   `json:"defaultBookType"`
 }
