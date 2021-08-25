@@ -375,8 +375,6 @@ func bookIndex(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func bookIndexGet()
-
 func streamLocations(locations []string, temp *template.Template, w io.Writer) error {
 	index := BookIndex{}
 	index.Books = make([]Book, len(locations))
